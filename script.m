@@ -31,6 +31,29 @@ IS_corr = array2table(corr(tIsole{:,:}, 'rows','complete'));
 IS_corr.Properties.VariableNames = {'Diabete', 'Ipertensione', 'Tumori', 'Fumatori', 'Peso', 'Alcool'};
 IS_corr.Properties.RowNames = {'Diabete', 'Ipertensione', 'Tumori', 'Fumatori', 'Peso', 'Alcool'}
 
+heatmap(NO_corr)
+
+% Completo
+lm1 = fitlm(tSud,'ResponseVar','SU_M_TUMORI', 'PredictorVars',{'SU_DIABETE',...
+    'SU_IPERTENSIONE','SU_FUMATORI', 'SU_ECCESSO_PESO','SU_ALCOOL'});
+
+% No fumatori
+lm2 = fitlm(tSud,'ResponseVar','SU_M_TUMORI', 'PredictorVars',{'SU_DIABETE',...
+    'SU_IPERTENSIONE', 'SU_ECCESSO_PESO','SU_ALCOOL'});
+
+% No diabete
+lm3 = fitlm(tSud,'ResponseVar','SU_M_TUMORI', 'PredictorVars',{'SU_IPERTENSIONE', ...
+    'SU_ECCESSO_PESO','SU_ALCOOL'});
+
+% No eccesso di peso
+lm4 = fitlm(tSud,'ResponseVar','SU_M_TUMORI', 'PredictorVars',{'SU_IPERTENSIONE', ...
+    'SU_ALCOOL'});
+
+stepwise_linear = stepwiselm(tSud,'Upper','linear', 'ResponseVar','SU_M_TUMORI','PEnter', 0.05)
+
+res = lm4.Residuals.Raw
+histfit(res)
+
 %% Plot casi di diabete in Italia %%
 figure
 plot(T.ANNO, T.NO_DIABETE, T.ANNO, T.NE_DIABETE, T.ANNO, T.CE_DIABETE, T.ANNO, T.SU_DIABETE, T.ANNO, T.IS_DIABETE)
@@ -77,7 +100,8 @@ AX(6,5).XLabel.String = 'Eccesso peso';
 AX(6,6).XLabel.String = 'Alcool';
 
 %% JB Test
-x=Datasetsanitariocompleto.SU_M_TUMORI;
+%x=Datasetsanitariocompleto.SU_M_TUMORI;
+x = res
 histfit(x);
 n=length(x);
 JBdata=(skewness(x).^2)*n/6+((kurtosis(x)-3).^2)*n/24;
