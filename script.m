@@ -3,6 +3,7 @@
 % Medolago Emanuele     1058907    
 % Zanotti Paolo         1074166
 
+%% Suddivisione tabelle per zona geografica %%
 T = readtable('Dataset_sanitario.csv')
 tNordOvest = T(:, 2:7);
 tNordEst = T(:, 8:13);
@@ -10,7 +11,7 @@ tCentro = T(:, 14:19);
 tSud = T(:, 20:25);
 tIsole = T(:, 26:31);
 
-%% Matrice di correlazione
+%% Matrici di correlazione %%
 NO_corr = array2table(corr(tNordOvest{:,:}, 'rows','complete'));
 NO_corr.Properties.VariableNames = {'Diabete', 'Ipertensione', 'Tumori', 'Fumatori', 'Peso', 'Alcool'};
 NO_corr.Properties.RowNames = {'Diabete', 'Ipertensione', 'Tumori', 'Fumatori', 'Peso', 'Alcool'}
@@ -30,29 +31,6 @@ SU_corr.Properties.RowNames = {'Diabete', 'Ipertensione', 'Tumori', 'Fumatori', 
 IS_corr = array2table(corr(tIsole{:,:}, 'rows','complete'));
 IS_corr.Properties.VariableNames = {'Diabete', 'Ipertensione', 'Tumori', 'Fumatori', 'Peso', 'Alcool'};
 IS_corr.Properties.RowNames = {'Diabete', 'Ipertensione', 'Tumori', 'Fumatori', 'Peso', 'Alcool'}
-
-heatmap(NO_corr)
-
-% Completo
-lm1 = fitlm(tSud,'ResponseVar','SU_M_TUMORI', 'PredictorVars',{'SU_DIABETE',...
-    'SU_IPERTENSIONE','SU_FUMATORI', 'SU_ECCESSO_PESO','SU_ALCOOL'});
-
-% No fumatori
-lm2 = fitlm(tSud,'ResponseVar','SU_M_TUMORI', 'PredictorVars',{'SU_DIABETE',...
-    'SU_IPERTENSIONE', 'SU_ECCESSO_PESO','SU_ALCOOL'});
-
-% No diabete
-lm3 = fitlm(tSud,'ResponseVar','SU_M_TUMORI', 'PredictorVars',{'SU_IPERTENSIONE', ...
-    'SU_ECCESSO_PESO','SU_ALCOOL'});
-
-% No eccesso di peso
-lm4 = fitlm(tSud,'ResponseVar','SU_M_TUMORI', 'PredictorVars',{'SU_IPERTENSIONE', ...
-    'SU_ALCOOL'});
-
-stepwise_linear = stepwiselm(tSud,'Upper','linear', 'ResponseVar','SU_M_TUMORI','PEnter', 0.05)
-
-res = lm4.Residuals.Raw
-histfit(res)
 
 %% Plot casi di diabete in Italia %%
 figure
@@ -120,3 +98,94 @@ X1=chi2rnd(2,m,n);
 JB1=(skewness(X1').^2)*n/6+((kurtosis(X1')-3).^2)*n/24;
 potenza=mean(JB1>JBcrit);
 disp(['potenza test: ',num2str(potenza)]);
+
+%% OLS per NORDOVEST %%
+% Modello Completo
+NO_lm1 = fitlm(tNordOvest,'ResponseVar','NO_M_TUMORI', 'PredictorVars',{'NO_DIABETE',...
+    'NO_IPERTENSIONE','NO_FUMATORI', 'NO_ECCESSO_PESO','NO_ALCOOL'});
+
+% NO Eccesso peso
+NO_lm2 = fitlm(tNordOvest,'ResponseVar','NO_M_TUMORI', 'PredictorVars',{'NO_DIABETE',...
+    'NO_IPERTENSIONE','NO_FUMATORI', 'NO_ALCOOL'});
+
+% NO Ipertensione
+NO_lm3 = fitlm(tNordOvest,'ResponseVar','NO_M_TUMORI', 'PredictorVars',{'NO_DIABETE',...
+    'NO_FUMATORI', 'NO_ALCOOL'});
+
+% NO Diabete
+NO_lm4 = fitlm(tNordOvest,'ResponseVar','NO_M_TUMORI', 'PredictorVars',{'NO_FUMATORI', ...
+    'NO_ALCOOL'});
+
+% Verifica con stepwise
+stepwise_linear = stepwiselm(tNordOvest,'Upper','linear', 'ResponseVar','NO_M_TUMORI','PEnter', 0.05)
+
+% Residui
+NO_res = NO_lm4.Residuals.Raw
+
+%% OLS per NORDEST
+% Modello Completo
+NE_lm1 = fitlm(tNordEst,'ResponseVar','NE_M_TUMORI', 'PredictorVars',{'NE_DIABETE',...
+    'NE_IPERTENSIONE','NE_FUMATORI', 'NE_ECCESSO_PESO','NE_ALCOOL'});
+
+% NE ipertensione
+NE_lm2 = fitlm(tNordEst,'ResponseVar','NE_M_TUMORI', 'PredictorVars',{'NE_DIABETE',...
+    'NE_FUMATORI', 'NE_ECCESSO_PESO','NE_ALCOOL'});
+
+% NE ALCOOL
+NE_lm3 = fitlm(tNordEst,'ResponseVar','NE_M_TUMORI', 'PredictorVars',{'NE_DIABETE',...
+    'NE_FUMATORI', 'NE_ECCESSO_PESO'});
+
+% NO eccetto peso
+NE_lm4 = fitlm(tNordEst,'ResponseVar','NE_M_TUMORI', 'PredictorVars',{'NE_DIABETE',...
+    'NE_FUMATORI'});
+
+% NO Fumatori
+NE_lm5 = fitlm(tNordEst,'ResponseVar','NE_M_TUMORI', 'PredictorVars',{'NE_DIABETE'});
+
+% Verifica con stepwise
+stepwise_linear = stepwiselm(tNordEst,'Upper','linear', 'ResponseVar','NE_M_TUMORI','PEnter', 0.05)
+
+% Residui
+NE_res = NE_lm4.Residuals.Raw
+
+%% OLS per SUD %%
+% Modello Completo
+SU_lm1 = fitlm(tSud,'ResponseVar','SU_M_TUMORI', 'PredictorVars',{'SU_DIABETE',...
+    'SU_IPERTENSIONE','SU_FUMATORI', 'SU_ECCESSO_PESO','SU_ALCOOL'});
+
+% No fumatori
+SU_lm2 = fitlm(tSud,'ResponseVar','SU_M_TUMORI', 'PredictorVars',{'SU_DIABETE',...
+    'SU_IPERTENSIONE', 'SU_ECCESSO_PESO','SU_ALCOOL'});
+
+% No diabete
+SU_lm3 = fitlm(tSud,'ResponseVar','SU_M_TUMORI', 'PredictorVars',{'SU_IPERTENSIONE', ...
+    'SU_ECCESSO_PESO','SU_ALCOOL'});
+
+% No eccesso di peso
+SU_lm4 = fitlm(tSud,'ResponseVar','SU_M_TUMORI', 'PredictorVars',{'SU_IPERTENSIONE', ...
+    'SU_ALCOOL'});
+
+% Verifica con stepwise
+stepwise_linear = stepwiselm(tSud,'Upper','linear', 'ResponseVar','SU_M_TUMORI','PEnter', 0.05)
+
+% Residui
+SU_res = SU_lm4.Residuals.Raw
+
+%% JB TEST %%
+% Simulate data:
+numObs = 50;         % Number of observations
+rng(0);              % Reset random number generators
+X = randn(numObs,3); % 3 random predictors
+
+% Simulate innovations:
+var = 0.1;     
+phi = [0.5,0.3];  % Autocorrelation coefficients
+e = simulate(arima('Constant',0,'AR',phi,'Variance',var),numObs);
+e = X(:,1).*e; % Heteroscedasticity proportional to first predictor
+
+% Simulate response:
+b = [1;2;3;4]; % Regression coefficients, including intercept
+y = [ones(numObs,1),X]*b + e;
+
+% Store data:
+DataTable = array2table([X,y],'VariableNames',{'X1','X2','X3','Y'});
