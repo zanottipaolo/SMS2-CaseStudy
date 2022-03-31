@@ -58,6 +58,7 @@ NO_lm1 = fitlm(tNordOvest,'ResponseVar','NO_IPERTENSIONE', 'PredictorVars',{'NO_
 NO_res = NO_lm1.Residuals.Raw;
 %%JB Test residui Nord Ovest
 x1=NO_res;
+figure
 histfit(x1);
 title('Residui Nord Ovest');
 n=length(x1);
@@ -83,6 +84,7 @@ NE_lm1 = fitlm(tNordEst,'ResponseVar','NE_IPERTENSIONE', 'PredictorVars',{'NE_DI
 NE_res = NE_lm1.Residuals.Raw;
 %%JB Test residui Nord Est
 x2=NE_res;
+figure
 histfit(x2);
 title('Residui Nord Est');
 n=length(x2);
@@ -108,6 +110,7 @@ SU_lm1 = fitlm(tSud,'ResponseVar','SU_IPERTENSIONE', 'PredictorVars',{'SU_DIABET
 SU_res = SU_lm1.Residuals.Raw;
 %%JB Test residui Sud
 x3=SU_res;
+figure
 histfit(x3);
 title('Residui Sud');
 n=length(x3);
@@ -133,6 +136,7 @@ CE_lm1 = fitlm(tCentro,'ResponseVar','CE_IPERTENSIONE', 'PredictorVars',{'CE_DIA
 CE_res = CE_lm1.Residuals.Raw;
 %%JB Test residui Centro
 x4=CE_res;
+figure
 histfit(x4);
 title('Residui Centro');
 n=length(x4);
@@ -160,6 +164,7 @@ IS_lm2 = fitlm(tIsole,'ResponseVar','IS_IPERTENSIONE', 'PredictorVars',{'IS_DIAB
 IS_res = IS_lm2.Residuals.Raw;
 %%JB Test residui Isole
 x5=IS_res;
+figure
 histfit(x5);
 title('Residui Isole');
 n=length(x5);
