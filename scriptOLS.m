@@ -78,6 +78,7 @@ X1=chi2rnd(2,m,n);
 JB1=(skewness(X1').^2)*n/6+((kurtosis(X1')-3).^2)*n/24;
 potenza=mean(JB1>JBcrit);
 disp(['potenza test_NO: ',num2str(potenza)]);
+
 %% OLS per NORDEST
 % Modello Completo
 NE_lm1 = fitlm(tNordEst,'ResponseVar','NE_IPERTENSIONE', 'PredictorVars',{'NE_DIABETE','NE_ECCESSO_PESO','NE_MA_ALLERGICHE'});
@@ -104,6 +105,7 @@ X1=chi2rnd(2,m,n);
 JB1=(skewness(X1').^2)*n/6+((kurtosis(X1')-3).^2)*n/24;
 potenza=mean(JB1>JBcrit);
 disp(['potenza test_NE: ',num2str(potenza)]);
+
 %% OLS per SUD %%
 % Modello Completo
 SU_lm1 = fitlm(tSud,'ResponseVar','SU_IPERTENSIONE', 'PredictorVars',{'SU_DIABETE','SU_ECCESSO_PESO','SU_MA_ALLERGICHE'});
@@ -130,6 +132,7 @@ X1=chi2rnd(2,m,n);
 JB1=(skewness(X1').^2)*n/6+((kurtosis(X1')-3).^2)*n/24;
 potenza=mean(JB1>JBcrit);
 disp(['potenza test_SU: ',num2str(potenza)]);
+
 %% OLS per CENTRO %%
 % Modello Completo
 CE_lm1 = fitlm(tCentro,'ResponseVar','CE_IPERTENSIONE', 'PredictorVars',{'CE_DIABETE','CE_ECCESSO_PESO','CE_MA_ALLERGICHE'});
@@ -156,6 +159,7 @@ X1=chi2rnd(2,m,n);
 JB1=(skewness(X1').^2)*n/6+((kurtosis(X1')-3).^2)*n/24;
 potenza=mean(JB1>JBcrit);
 disp(['potenza test_CE: ',num2str(potenza)]);
+
 %% OLS per ISOLE %%
 % Modello Completo
 IS_lm1 = fitlm(tIsole,'ResponseVar','IS_IPERTENSIONE', 'PredictorVars',{'IS_DIABETE','IS_ECCESSO_PESO','IS_MA_ALLERGICHE'});
