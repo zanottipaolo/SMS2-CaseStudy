@@ -75,3 +75,24 @@ AX(6,3).XLabel.String = 'Tumori';
 AX(6,4).XLabel.String = 'Fumatori';
 AX(6,5).XLabel.String = 'Eccesso peso';
 AX(6,6).XLabel.String = 'Alcool';
+
+%% JB Test
+x=Datasetsanitariocompleto.SU_M_TUMORI;
+histfit(x);
+n=length(x);
+JBdata=(skewness(x).^2)*n/6+((kurtosis(x)-3).^2)*n/24;
+%% Simulazione MC
+m=1000;
+X0=randn(m,n);
+JB0=(skewness(X0').^2)*n/6+((kurtosis(X0')-3).^2)*n/24;
+alpha=0.05;
+JBcrit=prctile(JB0,100*(1-alpha));
+disp(['JBcrit: ',num2str(JBcrit)]);
+pval=mean(JB0>JBdata);
+stdp=sqrt(pval*(1-pval)/m);
+disp(['pvalue: ',num2str(pval)]);
+disp(['dev std pvalue: ',num2str(stdp)]);
+X1=chi2rnd(2,m,n);
+JB1=(skewness(X1').^2)*n/6+((kurtosis(X1')-3).^2)*n/24;
+potenza=mean(JB1>JBcrit);
+disp(['potenza test: ',num2str(potenza)]);
