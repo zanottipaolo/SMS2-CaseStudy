@@ -11,24 +11,24 @@ tSud = T(:, 20:25);
 tIsole = T(:, 26:31);
 
 %% Matrice di correlazione
-NO_corr = array2table(corr(tNordOvest{:,:}, 'rows','complete'))
-NO_corr.Properties.VariableNames = {'Diabete', 'Ipertensione', 'Tumori', 'Fumatori', 'Peso', 'Alcool'}
+NO_corr = array2table(corr(tNordOvest{:,:}, 'rows','complete'));
+NO_corr.Properties.VariableNames = {'Diabete', 'Ipertensione', 'Tumori', 'Fumatori', 'Peso', 'Alcool'};
 NO_corr.Properties.RowNames = {'Diabete', 'Ipertensione', 'Tumori', 'Fumatori', 'Peso', 'Alcool'}
 
-NE_corr = array2table(corr(tNordEst{:,:}, 'rows','complete'))
-NE_corr.Properties.VariableNames = {'Diabete', 'Ipertensione', 'Tumori', 'Fumatori', 'Peso', 'Alcool'}
+NE_corr = array2table(corr(tNordEst{:,:}, 'rows','complete'));
+NE_corr.Properties.VariableNames = {'Diabete', 'Ipertensione', 'Tumori', 'Fumatori', 'Peso', 'Alcool'};
 NE_corr.Properties.RowNames = {'Diabete', 'Ipertensione', 'Tumori', 'Fumatori', 'Peso', 'Alcool'}
 
-CE_corr = array2table(corr(tCentro{:,:}, 'rows','complete'))
-CE_corr.Properties.VariableNames = {'Diabete', 'Ipertensione', 'Tumori', 'Fumatori', 'Peso', 'Alcool'}
+CE_corr = array2table(corr(tCentro{:,:}, 'rows','complete'));
+CE_corr.Properties.VariableNames = {'Diabete', 'Ipertensione', 'Tumori', 'Fumatori', 'Peso', 'Alcool'};
 CE_corr.Properties.RowNames = {'Diabete', 'Ipertensione', 'Tumori', 'Fumatori', 'Peso', 'Alcool'}
 
-SU_corr = array2table(corr(tSud{:,:}, 'rows','complete'))
-SU_corr.Properties.VariableNames = {'Diabete', 'Ipertensione', 'Tumori', 'Fumatori', 'Peso', 'Alcool'}
+SU_corr = array2table(corr(tSud{:,:}, 'rows','complete'));
+SU_corr.Properties.VariableNames = {'Diabete', 'Ipertensione', 'Tumori', 'Fumatori', 'Peso', 'Alcool'};
 SU_corr.Properties.RowNames = {'Diabete', 'Ipertensione', 'Tumori', 'Fumatori', 'Peso', 'Alcool'}
 
-IS_corr = array2table(corr(tIsole{:,:}, 'rows','complete'))
-IS_corr.Properties.VariableNames = {'Diabete', 'Ipertensione', 'Tumori', 'Fumatori', 'Peso', 'Alcool'}
+IS_corr = array2table(corr(tIsole{:,:}, 'rows','complete'));
+IS_corr.Properties.VariableNames = {'Diabete', 'Ipertensione', 'Tumori', 'Fumatori', 'Peso', 'Alcool'};
 IS_corr.Properties.RowNames = {'Diabete', 'Ipertensione', 'Tumori', 'Fumatori', 'Peso', 'Alcool'}
 
 %% Plot casi di diabete in Italia %%
