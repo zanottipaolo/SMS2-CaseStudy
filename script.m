@@ -4,11 +4,23 @@
 % Zanotti Paolo         1074166
 
 T = readtable('Dataset_sanitario.csv')
-tNordOvest = T{:, 2:7};
-tNordEst = T{:, 8:13};
-tCentro = T{:, 14:19};
-tSud = T{:, 20:25};
-tIsole = T{:, 26:31};
+tNordOvest = T(:, 2:7);
+tNordEst = T(:, 8:13);
+tCentro = T(:, 14:19);
+tSud = T(:, 20:25);
+tIsole = T(:, 26:31);
+
+%% Matrice di correlazione
+NO_corr = corr(tNordOvest{:,:}, 'rows','complete')
+NE_corr = corr(tNordEst{:,:}, 'rows','complete')
+CE_corr = corr(tCentro{:,:}, 'rows','complete')
+SU_corr = corr(tSud{:,:}, 'rows','complete')
+IS_corr = corr(tIsole{:,:}, 'rows', 'complete')
+
+corr(tNordEst{:,:}, 'rows','complete')
+corr(tCentro{:,:}, 'rows','complete')
+corr(tSud{:,:}, 'rows','complete')
+corr(tIsole{:,:}, 'rows','complete')
 
 %% Plot casi di diabete in Italia %%
 figure
