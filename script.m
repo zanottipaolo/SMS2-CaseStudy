@@ -111,6 +111,8 @@ ylabel("Residui studentizzati")
 yline(3, '--b')
 yline(-3, '--b')
 
+% 5. Varianza dei residui
+plotResiduals(NO_lm1, 'fitted', 'Marker','o')
 
 %% OLS per NORDEST
 % Modello Completo
@@ -170,6 +172,9 @@ xlabel("Fitted data")
 ylabel("Residui studentizzati")
 yline(3, '--b')
 yline(-3, '--b')
+
+% 5. Varianza dei residui
+plotResiduals(NE_lm1, 'fitted', 'Marker','o')
 
 
 %% OLS per SUD %%
@@ -258,6 +263,8 @@ ylabel("Residui studentizzati")
 yline(3, '--b')
 yline(-3, '--b')
 
+% 5. Varianza dei residui
+plotResiduals(CE_lm1, 'fitted', 'Marker','o')
 
 %% OLS per ISOLE %%
 % Modello Completo
