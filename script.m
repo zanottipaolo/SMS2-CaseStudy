@@ -56,55 +56,121 @@ legend("Nord Ovest", "Nord Est", "Centro", "Sud", "Isole")
 % Modello Completo
 NO_lm1 = fitlm(tNordOvest,'ResponseVar','NO_IPERTENSIONE', 'PredictorVars',{'NO_DIABETE','NO_ECCESSO_PESO','NO_MA_ALLERGICHE'});
 NO_res = NO_lm1.Residuals.Raw;
-%%JB Test residui Nord Ovest
-x1=NO_res;
+%% JB Test residui Nord Ovest
+x1 = NO_res;
 figure
 histfit(x1);
 title('Residui Nord Ovest');
-n=length(x1);
-JBdata=(skewness(x1).^2)*n/6+((kurtosis(x1)-3).^2)*n/24;
+n = length(x1);
+JBdata = (skewness(x1).^2)*n/6+((kurtosis(x1)-3).^2)*n/24;
 % Simulazione MC
-m=1000;
-X0=randn(m,n);
-JB0=(skewness(X0').^2)*n/6+((kurtosis(X0')-3).^2)*n/24;
-alpha=0.05;
-JBcrit=prctile(JB0,100*(1-alpha));
+m = 1000;
+X0 = randn(m,n);
+JB0 = (skewness(X0').^2)*n/6+((kurtosis(X0')-3).^2)*n/24;
+alpha = 0.05;
+JBcrit = prctile(JB0,100*(1-alpha));
 disp(['JBcrit_NO: ',num2str(JBcrit)]);
-pval=mean(JB0>JBdata);
-stdp=sqrt(pval*(1-pval)/m);
+pval = mean(JB0>JBdata);
+stdp = sqrt(pval*(1-pval)/m);
 disp(['pvalue_NO: ',num2str(pval)]);
 disp(['dev std pvalue_NO: ',num2str(stdp)]);
-X1=chi2rnd(2,m,n);
-JB1=(skewness(X1').^2)*n/6+((kurtosis(X1')-3).^2)*n/24;
-potenza=mean(JB1>JBcrit);
+X1 = chi2rnd(2,m,n);
+JB1 = (skewness(X1').^2)*n/6+((kurtosis(X1')-3).^2)*n/24;
+potenza = mean(JB1>JBcrit);
 disp(['potenza test_NO: ',num2str(potenza)]);
+
+% 1, Grafico dei residui (media uguale a 0)
+plot(NO_res)
+ylabel('Residui')
+xlabel('Osservazioni')
+yline(nanmean(NO_res), 'Color', 'b', 'LineWidth', 3)
+title('Grafico dei residui - Nord Ovest')
+
+% 2. Andamento dei Percentili
+qqplot(NO_res)
+title('Distribuzione Quantili teorici - Quantili residui standardizzati')
+
+% 3. Incorrelazione dei regressori con i residui
+[S,AX,BigAx,H,HAx] = plotmatrix(tNordOvest{:,{'NO_ECCESSO_PESO','NO_IPERTENSIONE','NO_MA_ALLERGICHE'}}, NO_res)
+title 'Correlazione Residui-Regressori'
+AX(1,1).YLabel.String = 'Residui'
+AX(1,1).XLabel.String = 'ECCESSO_PESO'
+AX(1,2).XLabel.String = 'IPERTENSIONE'
+AX(1,3).XLabel.String = 'MA_ALLERGICHE'
+
+% Verifica dell'incorrelazione tramite gli indici di correlazione
+NO_mat_corr_residui = corrcoef([NO_res, tNordOvest.NO_MA_ALLERGICHE,...
+    tNordOvest.NO_IPERTENSIONE, tNordOvest.NO_ECCESSO_PESO], 'Rows','complete');
+NO_res_corr_w_reg = NO_mat_corr_residui(2:end, 1) % Vettore di rho residui - regressori
+
+% 4. Ricerca degli outliers
+residui_studentizzati = NO_lm1.Residuals.Studentized;
+scatter(NO_lm1.Fitted, residui_studentizzati)
+xlabel("Fitted data")
+ylabel("Residui studentizzati")
+yline(3, '--b')
+yline(-3, '--b')
+
 
 %% OLS per NORDEST
 % Modello Completo
 NE_lm1 = fitlm(tNordEst,'ResponseVar','NE_IPERTENSIONE', 'PredictorVars',{'NE_DIABETE','NE_ECCESSO_PESO','NE_MA_ALLERGICHE'});
 NE_res = NE_lm1.Residuals.Raw;
-%%JB Test residui Nord Est
-x2=NE_res;
+%% JB Test residui Nord Est
+x2 = NE_res;
 figure
 histfit(x2);
 title('Residui Nord Est');
-n=length(x2);
-JBdata=(skewness(x2).^2)*n/6+((kurtosis(x2)-3).^2)*n/24;
+n = length(x2);
+JBdata = (skewness(x2).^2)*n/6+((kurtosis(x2)-3).^2)*n/24;
 % Simulazione MC
-m=1000;
-X0=randn(m,n);
-JB0=(skewness(X0').^2)*n/6+((kurtosis(X0')-3).^2)*n/24;
-alpha=0.05;
-JBcrit=prctile(JB0,100*(1-alpha));
+m = 1000;
+X0 = randn(m,n);
+JB0 = (skewness(X0').^2)*n/6+((kurtosis(X0')-3).^2)*n/24;
+alpha = 0.05;
+JBcrit = prctile(JB0,100*(1-alpha));
 disp(['JBcrit_NE: ',num2str(JBcrit)]);
-pval=mean(JB0>JBdata);
-stdp=sqrt(pval*(1-pval)/m);
+pval = mean(JB0>JBdata);
+stdp = sqrt(pval*(1-pval)/m);
 disp(['pvalue_NE: ',num2str(pval)]);
 disp(['dev std pvalue_NE: ',num2str(stdp)]);
-X1=chi2rnd(2,m,n);
-JB1=(skewness(X1').^2)*n/6+((kurtosis(X1')-3).^2)*n/24;
-potenza=mean(JB1>JBcrit);
+X1 = chi2rnd(2,m,n);
+JB1 = (skewness(X1').^2)*n/6+((kurtosis(X1')-3).^2)*n/24;
+potenza = mean(JB1>JBcrit);
 disp(['potenza test_NE: ',num2str(potenza)]);
+
+% 1, Grafico dei residui (media uguale a 0)
+plot(NE_res)
+ylabel('Residui')
+xlabel('Osservazioni')
+yline(nanmean(NE_res), 'Color', 'b', 'LineWidth', 3)
+title('Grafico dei residui - Nord Est')
+
+% 2. Andamento dei Percentili
+qqplot(NE_res)
+title('Distribuzione Quantili teorici - Quantili residui standardizzati')
+
+% 3. Incorrelazione dei regressori con i residui
+[S,AX,BigAx,H,HAx] = plotmatrix(tNordEst{:,{'NE_ECCESSO_PESO','NE_IPERTENSIONE','NE_MA_ALLERGICHE'}}, NE_res)
+title 'Correlazione Residui-Regressori'
+AX(1,1).YLabel.String = 'Residui'
+AX(1,1).XLabel.String = 'ECCESSO_PESO'
+AX(1,2).XLabel.String = 'IPERTENSIONE'
+AX(1,3).XLabel.String = 'MA_ALLERGICHE'
+
+% Verifica dell'incorrelazione tramite gli indici di correlazione
+NE_mat_corr_residui = corrcoef([NE_res, tNordEst.NE_MA_ALLERGICHE,...
+    tNordEst.NE_IPERTENSIONE, tNordEst.NE_ECCESSO_PESO], 'Rows','complete');
+NE_res_corr_w_reg = NE_mat_corr_residui(2:end, 1) % Vettore di rho residui - regressori
+
+% 4. Ricerca degli outliers
+NE_residui_stud = NE_lm1.Residuals.Studentized;
+scatter(NE_lm1.Fitted, NE_residui_stud)
+xlabel("Fitted data")
+ylabel("Residui studentizzati")
+yline(3, '--b')
+yline(-3, '--b')
+
 
 %% OLS per SUD %%
 % Modello Completo
@@ -137,28 +203,61 @@ disp(['potenza test_SU: ',num2str(potenza)]);
 % Modello Completo
 CE_lm1 = fitlm(tCentro,'ResponseVar','CE_IPERTENSIONE', 'PredictorVars',{'CE_DIABETE','CE_ECCESSO_PESO','CE_MA_ALLERGICHE'});
 CE_res = CE_lm1.Residuals.Raw;
-%%JB Test residui Centro
-x4=CE_res;
+%% JB Test residui Centro
+x4 = CE_res;
 figure
 histfit(x4);
 title('Residui Centro');
-n=length(x4);
-JBdata=(skewness(x4).^2)*n/6+((kurtosis(x4)-3).^2)*n/24;
+n = length(x4);
+JBdata = (skewness(x4).^2)*n/6+((kurtosis(x4)-3).^2)*n/24;
 % Simulazione MC
-m=1000;
-X0=randn(m,n);
-JB0=(skewness(X0').^2)*n/6+((kurtosis(X0')-3).^2)*n/24;
-alpha=0.05;
-JBcrit=prctile(JB0,100*(1-alpha));
+m = 1000;
+X0 = randn(m,n);
+JB0 = (skewness(X0').^2)*n/6+((kurtosis(X0')-3).^2)*n/24;
+alpha = 0.05;
+JBcrit = prctile(JB0,100*(1-alpha));
 disp(['JBcrit_CE: ',num2str(JBcrit)]);
-pval=mean(JB0>JBdata);
-stdp=sqrt(pval*(1-pval)/m);
+pval = mean(JB0>JBdata);
+stdp = sqrt(pval*(1-pval)/m);
 disp(['pvalue_CE: ',num2str(pval)]);
 disp(['dev std pvalue_CE: ',num2str(stdp)]);
-X1=chi2rnd(2,m,n);
-JB1=(skewness(X1').^2)*n/6+((kurtosis(X1')-3).^2)*n/24;
-potenza=mean(JB1>JBcrit);
+X1 = chi2rnd(2,m,n);
+JB1 = (skewness(X1').^2)*n/6+((kurtosis(X1')-3).^2)*n/24;
+potenza = mean(JB1>JBcrit);
 disp(['potenza test_CE: ',num2str(potenza)]);
+
+% 1, Grafico dei residui (media uguale a 0)
+plot(CE_res)
+ylabel('Residui')
+xlabel('Osservazioni')
+yline(nanmean(CE_res), 'Color', 'b', 'LineWidth', 3)
+title('Grafico dei residui - Centro')
+
+% 2. Andamento dei Percentili
+qqplot(CE_res)
+title('Distribuzione Quantili teorici - Quantili residui standardizzati')
+
+% 3. Incorrelazione dei regressori con i residui
+[S,AX,BigAx,H,HAx] = plotmatrix(tCentro{:,{'CE_ECCESSO_PESO','CE_IPERTENSIONE','CE_MA_ALLERGICHE'}}, CE_res)
+title 'Correlazione Residui-Regressori'
+AX(1,1).YLabel.String = 'Residui'
+AX(1,1).XLabel.String = 'ECCESSO_PESO'
+AX(1,2).XLabel.String = 'IPERTENSIONE'
+AX(1,3).XLabel.String = 'MA_ALLERGICHE'
+
+% Verifica dell'incorrelazione tramite gli indici di correlazione
+CE_mat_corr_residui = corrcoef([CE_res, tCentro.CE_MA_ALLERGICHE,...
+    tCentro.CE_IPERTENSIONE, tCentro.CE_ECCESSO_PESO], 'Rows','complete');
+CE_res_corr_w_reg = CE_mat_corr_residui(2:end, 1) % Vettore di rho residui - regressori
+
+% 4. Ricerca degli outliers
+CE_residui_stud = CE_lm1.Residuals.Studentized;
+scatter(CE_lm1.Fitted, CE_residui_stud)
+xlabel("Fitted data")
+ylabel("Residui studentizzati")
+yline(3, '--b')
+yline(-3, '--b')
+
 
 %% OLS per ISOLE %%
 % Modello Completo
