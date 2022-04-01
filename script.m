@@ -91,16 +91,16 @@ qqplot(NO_res)
 title('Distribuzione Quantili teorici - Quantili residui standardizzati')
 
 % 3. Incorrelazione dei regressori con i residui
-[S,AX,BigAx,H,HAx] = plotmatrix(tNordOvest{:,{'NO_ECCESSO_PESO','NO_IPERTENSIONE','NO_MA_ALLERGICHE'}}, NO_res)
+[S,AX,BigAx,H,HAx] = plotmatrix(tNordOvest{:,{'NO_DIABETE','NO_ECCESSO_PESO','NO_MA_ALLERGICHE'}}, NO_res)
 title 'Correlazione Residui-Regressori'
 AX(1,1).YLabel.String = 'Residui'
-AX(1,1).XLabel.String = 'ECCESSO_PESO'
-AX(1,2).XLabel.String = 'IPERTENSIONE'
-AX(1,3).XLabel.String = 'MA_ALLERGICHE'
+AX(1,1).XLabel.String = 'DIABETE'
+AX(1,2).XLabel.String = 'ECCESSO DI PESO'
+AX(1,3).XLabel.String = 'MALATTIE ALLERGICHE'
 
 % Verifica dell'incorrelazione tramite gli indici di correlazione
-NO_mat_corr_residui = corrcoef([NO_res, tNordOvest.NO_MA_ALLERGICHE,...
-    tNordOvest.NO_IPERTENSIONE, tNordOvest.NO_ECCESSO_PESO], 'Rows','complete');
+NO_mat_corr_residui = corrcoef([NO_res, tNordOvest.NO_DIABETE,...
+    tNordOvest.NO_ECCESSO_PESO, tNordOvest.NO_MA_ALLERGICHE], 'Rows','complete');
 NO_res_corr_w_reg = NO_mat_corr_residui(2:end, 1) % Vettore di rho residui - regressori
 
 % 4. Ricerca degli outliers
@@ -151,16 +151,16 @@ qqplot(NE_res)
 title('Distribuzione Quantili teorici - Quantili residui standardizzati')
 
 % 3. Incorrelazione dei regressori con i residui
-[S,AX,BigAx,H,HAx] = plotmatrix(tNordEst{:,{'NE_ECCESSO_PESO','NE_IPERTENSIONE','NE_MA_ALLERGICHE'}}, NE_res)
+[S,AX,BigAx,H,HAx] = plotmatrix(tNordEst{:,{'NE_DIABETE','NE_ECCESSO_PESO','NE_MA_ALLERGICHE'}}, NE_res)
 title 'Correlazione Residui-Regressori'
 AX(1,1).YLabel.String = 'Residui'
-AX(1,1).XLabel.String = 'ECCESSO_PESO'
-AX(1,2).XLabel.String = 'IPERTENSIONE'
-AX(1,3).XLabel.String = 'MA_ALLERGICHE'
+AX(1,1).XLabel.String = 'DIABETE'
+AX(1,2).XLabel.String = 'ECCESSO DI PESO'
+AX(1,3).XLabel.String = 'MALATTIE ALLERGICHE'
 
 % Verifica dell'incorrelazione tramite gli indici di correlazione
-NE_mat_corr_residui = corrcoef([NE_res, tNordEst.NE_MA_ALLERGICHE,...
-    tNordEst.NE_IPERTENSIONE, tNordEst.NE_ECCESSO_PESO], 'Rows','complete');
+NE_mat_corr_residui = corrcoef([NE_res, tNordEst.NE_DIABETE,...
+    tNordEst.NE_ECCESSO_PESO, tNordEst.NE_MA_ALLERGICHE], 'Rows','complete');
 NE_res_corr_w_reg = NE_mat_corr_residui(2:end, 1) % Vettore di rho residui - regressori
 
 % 4. Ricerca degli outliers
@@ -238,16 +238,16 @@ qqplot(CE_res)
 title('Distribuzione Quantili teorici - Quantili residui standardizzati')
 
 % 3. Incorrelazione dei regressori con i residui
-[S,AX,BigAx,H,HAx] = plotmatrix(tCentro{:,{'CE_ECCESSO_PESO','CE_IPERTENSIONE','CE_MA_ALLERGICHE'}}, CE_res)
+[S,AX,BigAx,H,HAx] = plotmatrix(tCentro{:,{'CE_DIABETE','CE_ECCESSO_PESO','CE_MA_ALLERGICHE'}}, CE_res)
 title 'Correlazione Residui-Regressori'
 AX(1,1).YLabel.String = 'Residui'
-AX(1,1).XLabel.String = 'ECCESSO_PESO'
-AX(1,2).XLabel.String = 'IPERTENSIONE'
-AX(1,3).XLabel.String = 'MA_ALLERGICHE'
+AX(1,1).XLabel.String = 'DIABETE'
+AX(1,2).XLabel.String = 'ECCESSO DI PESO'
+AX(1,3).XLabel.String = 'MALATTIE ALLERGICHE'
 
 % Verifica dell'incorrelazione tramite gli indici di correlazione
-CE_mat_corr_residui = corrcoef([CE_res, tCentro.CE_MA_ALLERGICHE,...
-    tCentro.CE_IPERTENSIONE, tCentro.CE_ECCESSO_PESO], 'Rows','complete');
+CE_mat_corr_residui = corrcoef([CE_res, tCentro.CE_DIABETE,...
+    tCentro.CE_ECCESSO_PESO, tCentro.CE_MA_ALLERGICHE], 'Rows','complete');
 CE_res_corr_w_reg = CE_mat_corr_residui(2:end, 1) % Vettore di rho residui - regressori
 
 % 4. Ricerca degli outliers
