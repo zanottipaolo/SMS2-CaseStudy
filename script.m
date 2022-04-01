@@ -3,189 +3,188 @@
 % Medolago Emanuele     1058907    
 % Zanotti Paolo         1074166
 
-%% Suddivisione tabelle per zona geografica %%
-T = readtable('Dataset_sanitario.csv')
-tNordOvest = T(:, 2:7);
-tNordEst = T(:, 8:13);
-tCentro = T(:, 14:19);
-tSud = T(:, 20:25);
-tIsole = T(:, 26:31);
+T = readtable('Dataset_sanitario.csv');
+tNordOvest = T(:, 2:5);
+tNordEst = T(:, 6:9);
+tCentro = T(:, 10:13);
+tSud = T(:, 14:17);
+tIsole = T(:, 18:end);
 
-%% Matrici di correlazione %%
+%% Matrice di correlazione
 NO_corr = array2table(corr(tNordOvest{:,:}, 'rows','complete'));
-NO_corr.Properties.VariableNames = {'Diabete', 'Ipertensione', 'Tumori', 'Fumatori', 'Peso', 'Alcool'};
-NO_corr.Properties.RowNames = {'Diabete', 'Ipertensione', 'Tumori', 'Fumatori', 'Peso', 'Alcool'}
+NO_corr.Properties.VariableNames = {'Diabete','Malattie Allergiche', 'Ipertensione','Peso'};
+NO_corr.Properties.RowNames = {'Diabete','Malattie Allergiche', 'Ipertensione','Peso'}
 
 NE_corr = array2table(corr(tNordEst{:,:}, 'rows','complete'));
-NE_corr.Properties.VariableNames = {'Diabete', 'Ipertensione', 'Tumori', 'Fumatori', 'Peso', 'Alcool'};
-NE_corr.Properties.RowNames = {'Diabete', 'Ipertensione', 'Tumori', 'Fumatori', 'Peso', 'Alcool'}
+NE_corr.Properties.VariableNames = {'Diabete','Malattie Allergiche', 'Ipertensione','Peso'};
+NE_corr.Properties.RowNames = {'Diabete','Malattie Allergiche', 'Ipertensione','Peso'}
 
 CE_corr = array2table(corr(tCentro{:,:}, 'rows','complete'));
-CE_corr.Properties.VariableNames = {'Diabete', 'Ipertensione', 'Tumori', 'Fumatori', 'Peso', 'Alcool'};
-CE_corr.Properties.RowNames = {'Diabete', 'Ipertensione', 'Tumori', 'Fumatori', 'Peso', 'Alcool'}
+CE_corr.Properties.VariableNames = {'Diabete','Malattie Allergiche', 'Ipertensione','Peso'};
+CE_corr.Properties.RowNames = {'Diabete','Malattie Allergiche', 'Ipertensione','Peso'}
 
 SU_corr = array2table(corr(tSud{:,:}, 'rows','complete'));
-SU_corr.Properties.VariableNames = {'Diabete', 'Ipertensione', 'Tumori', 'Fumatori', 'Peso', 'Alcool'};
-SU_corr.Properties.RowNames = {'Diabete', 'Ipertensione', 'Tumori', 'Fumatori', 'Peso', 'Alcool'}
+SU_corr.Properties.VariableNames = {'Diabete','Malattie Allergiche', 'Ipertensione','Peso'};
+SU_corr.Properties.RowNames = {'Diabete','Malattie Allergiche', 'Ipertensione','Peso'}
 
 IS_corr = array2table(corr(tIsole{:,:}, 'rows','complete'));
-IS_corr.Properties.VariableNames = {'Diabete', 'Ipertensione', 'Tumori', 'Fumatori', 'Peso', 'Alcool'};
-IS_corr.Properties.RowNames = {'Diabete', 'Ipertensione', 'Tumori', 'Fumatori', 'Peso', 'Alcool'}
+IS_corr.Properties.VariableNames = {'Diabete','Malattie Allergiche', 'Ipertensione','Peso'};
+IS_corr.Properties.RowNames = {'Diabete','Malattie Allergiche', 'Ipertensione','Peso'}
 
 %% Plot casi di diabete in Italia %%
 figure
 plot(T.ANNO, T.NO_DIABETE, T.ANNO, T.NE_DIABETE, T.ANNO, T.CE_DIABETE, T.ANNO, T.SU_DIABETE, T.ANNO, T.IS_DIABETE)
-title("Casi di Diabete in Italia 1990 - 2013")
+title("Casi di Diabete in Italia 1990 - 2014")
 legend("Nord Ovest", "Nord Est", "Centro", "Sud", "Isole")
 % ------------------------------- %
 
 %% Plot casi di ipertensione in Italia %%
 figure
 plot(T.ANNO, T.NO_IPERTENSIONE, T.ANNO, T.NE_IPERTENSIONE, T.ANNO, T.CE_IPERTENSIONE, T.ANNO, T.SU_IPERTENSIONE, T.ANNO, T.IS_IPERTENSIONE)
-title("Casi di Ipertensione in Italia 1990 - 2013")
+title("Casi di Ipertensione in Italia 1990 - 2014")
 legend("Nord Ovest", "Nord Est", "Centro", "Sud", "Isole")
 %% ------------------------------- %%
 
-%% Plot casi di tumori in Italia %%
+%% Plot casi di Malattie allergiche in Italia %%
 figure
-plot(T.ANNO, T.NO_M_TUMORI, T.ANNO, T.NE_M_TUMORI, T.ANNO, T.CE_M_TUMORI, T.ANNO, T.SU_M_TUMORI, T.ANNO, T.IS_M_TUMORI)
-title("Casi di Tumori in Italia 1990 - 2013")
+plot(T.ANNO, T.NO_MA_ALLERGICHE, T.ANNO, T.NE_MA_ALLERGICHE, T.ANNO, T.CE_MA_ALLERGICHE, T.ANNO, T.SU_MA_ALLERGICHE, T.ANNO, T.IS_MA_ALLERGICHE)
+title("Casi di Malattie allergiche in Italia 1990 - 2014")
 legend("Nord Ovest", "Nord Est", "Centro", "Sud", "Isole")
 %% ------------------------------- %%
 
-%% Plot fumatori in Italia %%
+%% OLS per NORDOVEST %%
+% Modello Completo
+NO_lm1 = fitlm(tNordOvest,'ResponseVar','NO_IPERTENSIONE', 'PredictorVars',{'NO_DIABETE','NO_ECCESSO_PESO','NO_MA_ALLERGICHE'});
+NO_res = NO_lm1.Residuals.Raw;
+%%JB Test residui Nord Ovest
+x1=NO_res;
 figure
-plot(T.ANNO, T.NO_FUMATORI, T.ANNO, T.NE_FUMATORI, T.ANNO, T.CE_FUMATORI, T.ANNO, T.SU_FUMATORI, T.ANNO, T.IS_FUMATORI)
-title("Fumatori in Italia 1990 - 2013")
-legend("Nord Ovest", "Nord Est", "Centro", "Sud", "Isole")
-%% ------------------------------- %%
-
-%% Matrice di grafici di correlazione
-[S,AX,BigAx,H,HAx] = plotmatrix(tNordOvest);
-title 'Matrice Grafici Per Analisi Correlazione NORD OVEST';
-AX(1,1).YLabel.String = 'Diabete';
-AX(2,1).YLabel.String = 'Ipertensione';
-AX(3,1).YLabel.String = 'Tumori';
-AX(4,1).YLabel.String = 'Fumatori';
-AX(5,1).YLabel.String = 'Eccesso peso';
-AX(6,1).YLabel.String = 'Alcool';
-
-AX(6,1).XLabel.String = 'Diabete'; 
-AX(6,2).XLabel.String = 'Ipertensione'; 
-AX(6,3).XLabel.String = 'Tumori';
-AX(6,4).XLabel.String = 'Fumatori';
-AX(6,5).XLabel.String = 'Eccesso peso';
-AX(6,6).XLabel.String = 'Alcool';
-
-%% JB Test
-%x=Datasetsanitariocompleto.SU_M_TUMORI;
-x = res
-histfit(x);
-n=length(x);
-JBdata=(skewness(x).^2)*n/6+((kurtosis(x)-3).^2)*n/24;
-%% Simulazione MC
+histfit(x1);
+title('Residui Nord Ovest');
+n=length(x1);
+JBdata=(skewness(x1).^2)*n/6+((kurtosis(x1)-3).^2)*n/24;
+% Simulazione MC
 m=1000;
 X0=randn(m,n);
 JB0=(skewness(X0').^2)*n/6+((kurtosis(X0')-3).^2)*n/24;
 alpha=0.05;
 JBcrit=prctile(JB0,100*(1-alpha));
-disp(['JBcrit: ',num2str(JBcrit)]);
+disp(['JBcrit_NO: ',num2str(JBcrit)]);
 pval=mean(JB0>JBdata);
 stdp=sqrt(pval*(1-pval)/m);
-disp(['pvalue: ',num2str(pval)]);
-disp(['dev std pvalue: ',num2str(stdp)]);
+disp(['pvalue_NO: ',num2str(pval)]);
+disp(['dev std pvalue_NO: ',num2str(stdp)]);
 X1=chi2rnd(2,m,n);
 JB1=(skewness(X1').^2)*n/6+((kurtosis(X1')-3).^2)*n/24;
 potenza=mean(JB1>JBcrit);
-disp(['potenza test: ',num2str(potenza)]);
-
-%% OLS per NORDOVEST %%
-% Modello Completo
-NO_lm1 = fitlm(tNordOvest,'ResponseVar','NO_M_TUMORI', 'PredictorVars',{'NO_DIABETE',...
-    'NO_IPERTENSIONE','NO_FUMATORI', 'NO_ECCESSO_PESO','NO_ALCOOL'});
-
-% NO Eccesso peso
-NO_lm2 = fitlm(tNordOvest,'ResponseVar','NO_M_TUMORI', 'PredictorVars',{'NO_DIABETE',...
-    'NO_IPERTENSIONE','NO_FUMATORI', 'NO_ALCOOL'});
-
-% NO Ipertensione
-NO_lm3 = fitlm(tNordOvest,'ResponseVar','NO_M_TUMORI', 'PredictorVars',{'NO_DIABETE',...
-    'NO_FUMATORI', 'NO_ALCOOL'});
-
-% NO Diabete
-NO_lm4 = fitlm(tNordOvest,'ResponseVar','NO_M_TUMORI', 'PredictorVars',{'NO_FUMATORI', ...
-    'NO_ALCOOL'});
-
-% Verifica con stepwise
-stepwise_linear = stepwiselm(tNordOvest,'Upper','linear', 'ResponseVar','NO_M_TUMORI','PEnter', 0.05)
-
-% Residui
-NO_res = NO_lm4.Residuals.Raw
+disp(['potenza test_NO: ',num2str(potenza)]);
 
 %% OLS per NORDEST
 % Modello Completo
-NE_lm1 = fitlm(tNordEst,'ResponseVar','NE_M_TUMORI', 'PredictorVars',{'NE_DIABETE',...
-    'NE_IPERTENSIONE','NE_FUMATORI', 'NE_ECCESSO_PESO','NE_ALCOOL'});
-
-% NE ipertensione
-NE_lm2 = fitlm(tNordEst,'ResponseVar','NE_M_TUMORI', 'PredictorVars',{'NE_DIABETE',...
-    'NE_FUMATORI', 'NE_ECCESSO_PESO','NE_ALCOOL'});
-
-% NE ALCOOL
-NE_lm3 = fitlm(tNordEst,'ResponseVar','NE_M_TUMORI', 'PredictorVars',{'NE_DIABETE',...
-    'NE_FUMATORI', 'NE_ECCESSO_PESO'});
-
-% NO eccetto peso
-NE_lm4 = fitlm(tNordEst,'ResponseVar','NE_M_TUMORI', 'PredictorVars',{'NE_DIABETE',...
-    'NE_FUMATORI'});
-
-% NO Fumatori
-NE_lm5 = fitlm(tNordEst,'ResponseVar','NE_M_TUMORI', 'PredictorVars',{'NE_DIABETE'});
-
-% Verifica con stepwise
-stepwise_linear = stepwiselm(tNordEst,'Upper','linear', 'ResponseVar','NE_M_TUMORI','PEnter', 0.05)
-
-% Residui
-NE_res = NE_lm4.Residuals.Raw
+NE_lm1 = fitlm(tNordEst,'ResponseVar','NE_IPERTENSIONE', 'PredictorVars',{'NE_DIABETE','NE_ECCESSO_PESO','NE_MA_ALLERGICHE'});
+NE_res = NE_lm1.Residuals.Raw;
+%%JB Test residui Nord Est
+x2=NE_res;
+figure
+histfit(x2);
+title('Residui Nord Est');
+n=length(x2);
+JBdata=(skewness(x2).^2)*n/6+((kurtosis(x2)-3).^2)*n/24;
+% Simulazione MC
+m=1000;
+X0=randn(m,n);
+JB0=(skewness(X0').^2)*n/6+((kurtosis(X0')-3).^2)*n/24;
+alpha=0.05;
+JBcrit=prctile(JB0,100*(1-alpha));
+disp(['JBcrit_NE: ',num2str(JBcrit)]);
+pval=mean(JB0>JBdata);
+stdp=sqrt(pval*(1-pval)/m);
+disp(['pvalue_NE: ',num2str(pval)]);
+disp(['dev std pvalue_NE: ',num2str(stdp)]);
+X1=chi2rnd(2,m,n);
+JB1=(skewness(X1').^2)*n/6+((kurtosis(X1')-3).^2)*n/24;
+potenza=mean(JB1>JBcrit);
+disp(['potenza test_NE: ',num2str(potenza)]);
 
 %% OLS per SUD %%
 % Modello Completo
-SU_lm1 = fitlm(tSud,'ResponseVar','SU_M_TUMORI', 'PredictorVars',{'SU_DIABETE',...
-    'SU_IPERTENSIONE','SU_FUMATORI', 'SU_ECCESSO_PESO','SU_ALCOOL'});
+SU_lm1 = fitlm(tSud,'ResponseVar','SU_IPERTENSIONE', 'PredictorVars',{'SU_DIABETE','SU_ECCESSO_PESO','SU_MA_ALLERGICHE'});
+SU_res = SU_lm1.Residuals.Raw;
+%%JB Test residui Sud
+x3=SU_res;
+figure
+histfit(x3);
+title('Residui Sud');
+n=length(x3);
+JBdata=(skewness(x3).^2)*n/6+((kurtosis(x3)-3).^2)*n/24;
+% Simulazione MC
+m=1000;
+X0=randn(m,n);
+JB0=(skewness(X0').^2)*n/6+((kurtosis(X0')-3).^2)*n/24;
+alpha=0.05;
+JBcrit=prctile(JB0,100*(1-alpha));
+disp(['JBcrit_SU: ',num2str(JBcrit)]);
+pval=mean(JB0>JBdata);
+stdp=sqrt(pval*(1-pval)/m);
+disp(['pvalue_SU: ',num2str(pval)]);
+disp(['dev std pvalue_SU: ',num2str(stdp)]);
+X1=chi2rnd(2,m,n);
+JB1=(skewness(X1').^2)*n/6+((kurtosis(X1')-3).^2)*n/24;
+potenza=mean(JB1>JBcrit);
+disp(['potenza test_SU: ',num2str(potenza)]);
 
-% No fumatori
-SU_lm2 = fitlm(tSud,'ResponseVar','SU_M_TUMORI', 'PredictorVars',{'SU_DIABETE',...
-    'SU_IPERTENSIONE', 'SU_ECCESSO_PESO','SU_ALCOOL'});
+%% OLS per CENTRO %%
+% Modello Completo
+CE_lm1 = fitlm(tCentro,'ResponseVar','CE_IPERTENSIONE', 'PredictorVars',{'CE_DIABETE','CE_ECCESSO_PESO','CE_MA_ALLERGICHE'});
+CE_res = CE_lm1.Residuals.Raw;
+%%JB Test residui Centro
+x4=CE_res;
+figure
+histfit(x4);
+title('Residui Centro');
+n=length(x4);
+JBdata=(skewness(x4).^2)*n/6+((kurtosis(x4)-3).^2)*n/24;
+% Simulazione MC
+m=1000;
+X0=randn(m,n);
+JB0=(skewness(X0').^2)*n/6+((kurtosis(X0')-3).^2)*n/24;
+alpha=0.05;
+JBcrit=prctile(JB0,100*(1-alpha));
+disp(['JBcrit_CE: ',num2str(JBcrit)]);
+pval=mean(JB0>JBdata);
+stdp=sqrt(pval*(1-pval)/m);
+disp(['pvalue_CE: ',num2str(pval)]);
+disp(['dev std pvalue_CE: ',num2str(stdp)]);
+X1=chi2rnd(2,m,n);
+JB1=(skewness(X1').^2)*n/6+((kurtosis(X1')-3).^2)*n/24;
+potenza=mean(JB1>JBcrit);
+disp(['potenza test_CE: ',num2str(potenza)]);
 
-% No diabete
-SU_lm3 = fitlm(tSud,'ResponseVar','SU_M_TUMORI', 'PredictorVars',{'SU_IPERTENSIONE', ...
-    'SU_ECCESSO_PESO','SU_ALCOOL'});
-
+%% OLS per ISOLE %%
+% Modello Completo
+IS_lm1 = fitlm(tIsole,'ResponseVar','IS_IPERTENSIONE', 'PredictorVars',{'IS_DIABETE','IS_ECCESSO_PESO','IS_MA_ALLERGICHE'});
 % No eccesso di peso
-SU_lm4 = fitlm(tSud,'ResponseVar','SU_M_TUMORI', 'PredictorVars',{'SU_IPERTENSIONE', ...
-    'SU_ALCOOL'});
-
-% Verifica con stepwise
-stepwise_linear = stepwiselm(tSud,'Upper','linear', 'ResponseVar','SU_M_TUMORI','PEnter', 0.05)
-
-% Residui
-SU_res = SU_lm4.Residuals.Raw
-
-%% JB TEST %%
-% Simulate data:
-numObs = 50;         % Number of observations
-rng(0);              % Reset random number generators
-X = randn(numObs,3); % 3 random predictors
-
-% Simulate innovations:
-var = 0.1;     
-phi = [0.5,0.3];  % Autocorrelation coefficients
-e = simulate(arima('Constant',0,'AR',phi,'Variance',var),numObs);
-e = X(:,1).*e; % Heteroscedasticity proportional to first predictor
-
-% Simulate response:
-b = [1;2;3;4]; % Regression coefficients, including intercept
-y = [ones(numObs,1),X]*b + e;
-
-% Store data:
-DataTable = array2table([X,y],'VariableNames',{'X1','X2','X3','Y'});
+IS_lm2 = fitlm(tIsole,'ResponseVar','IS_IPERTENSIONE', 'PredictorVars',{'IS_DIABETE','IS_MA_ALLERGICHE'});
+IS_res = IS_lm2.Residuals.Raw;
+%%JB Test residui Isole
+x5=IS_res;
+figure
+histfit(x5);
+title('Residui Isole');
+n=length(x5);
+JBdata=(skewness(x5).^2)*n/6+((kurtosis(x5)-3).^2)*n/24;
+% Simulazione MC
+m=1000;
+X0=randn(m,n);
+JB0=(skewness(X0').^2)*n/6+((kurtosis(X0')-3).^2)*n/24;
+alpha=0.05;
+JBcrit=prctile(JB0,100*(1-alpha));
+disp(['JBcrit_IS: ',num2str(JBcrit)]);
+pval=mean(JB0>JBdata);
+stdp=sqrt(pval*(1-pval)/m);
+disp(['pvalue_IS: ',num2str(pval)]);
+disp(['dev std pvalue_IS: ',num2str(stdp)]);
+X1=chi2rnd(2,m,n);
+JB1=(skewness(X1').^2)*n/6+((kurtosis(X1')-3).^2)*n/24;
+potenza=mean(JB1>JBcrit);
+disp(['potenza test_IS: ',num2str(potenza)]);
