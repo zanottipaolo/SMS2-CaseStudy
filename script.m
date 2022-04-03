@@ -52,17 +52,21 @@ title("Casi di Malattie allergiche in Italia 1990 - 2014")
 legend("Nord Ovest", "Nord Est", "Centro", "Sud", "Isole")
 %% ------------------------------- %%
 
+
 %% OLS per NORDOVEST %%
+
 % Modello Completo
 NO_lm1 = fitlm(tNordOvest,'ResponseVar','NO_IPERTENSIONE', 'PredictorVars',{'NO_DIABETE','NO_ECCESSO_PESO','NO_MA_ALLERGICHE'});
 NO_res = NO_lm1.Residuals.Raw;
-%% JB Test residui Nord Ovest
+
+% JB Test residui Nord Ovest
 x1 = NO_res;
 figure
 histfit(x1);
 title('Residui Nord Ovest');
 n = length(x1);
 JBdata = (skewness(x1).^2)*n/6+((kurtosis(x1)-3).^2)*n/24;
+
 % Simulazione MC
 m = 1000;
 X0 = randn(m,n);
@@ -79,7 +83,7 @@ JB1 = (skewness(X1').^2)*n/6+((kurtosis(X1')-3).^2)*n/24;
 potenza = mean(JB1>JBcrit);
 disp(['potenza test_NO: ',num2str(potenza)]);
 
-% 1, Grafico dei residui (media uguale a 0)
+% 1. Grafico dei residui (media uguale a 0)
 plot(NO_res)
 ylabel('Residui')
 xlabel('Osservazioni')
@@ -114,17 +118,21 @@ yline(-3, '--b')
 % 5. Varianza dei residui
 plotResiduals(NO_lm1, 'fitted', 'Marker','o')
 
+
 %% OLS per NORDEST
+
 % Modello Completo
 NE_lm1 = fitlm(tNordEst,'ResponseVar','NE_IPERTENSIONE', 'PredictorVars',{'NE_DIABETE','NE_ECCESSO_PESO','NE_MA_ALLERGICHE'});
 NE_res = NE_lm1.Residuals.Raw;
-%% JB Test residui Nord Est
+
+% JB Test residui Nord Est
 x2 = NE_res;
 figure
 histfit(x2);
 title('Residui Nord Est');
 n = length(x2);
 JBdata = (skewness(x2).^2)*n/6+((kurtosis(x2)-3).^2)*n/24;
+
 % Simulazione MC
 m = 1000;
 X0 = randn(m,n);
@@ -141,7 +149,7 @@ JB1 = (skewness(X1').^2)*n/6+((kurtosis(X1')-3).^2)*n/24;
 potenza = mean(JB1>JBcrit);
 disp(['potenza test_NE: ',num2str(potenza)]);
 
-% 1, Grafico dei residui (media uguale a 0)
+% 1. Grafico dei residui (media uguale a 0)
 plot(NE_res)
 ylabel('Residui')
 xlabel('Osservazioni')
@@ -178,16 +186,19 @@ plotResiduals(NE_lm1, 'fitted', 'Marker','o')
 
 
 %% OLS per SUD %%
+
 % Modello Completo
 SU_lm1 = fitlm(tSud,'ResponseVar','SU_IPERTENSIONE', 'PredictorVars',{'SU_DIABETE','SU_ECCESSO_PESO','SU_MA_ALLERGICHE'});
 SU_res = SU_lm1.Residuals.Raw;
-%%JB Test residui Sud
+
+% JB Test residui Sud
 x3=SU_res;
 figure
 histfit(x3);
 title('Residui Sud');
 n=length(x3);
 JBdata=(skewness(x3).^2)*n/6+((kurtosis(x3)-3).^2)*n/24;
+
 % Simulazione MC
 m=1000;
 X0=randn(m,n);
@@ -204,17 +215,21 @@ JB1=(skewness(X1').^2)*n/6+((kurtosis(X1')-3).^2)*n/24;
 potenza=mean(JB1>JBcrit);
 disp(['potenza test_SU: ',num2str(potenza)]);
 
+
 %% OLS per CENTRO %%
+
 % Modello Completo
 CE_lm1 = fitlm(tCentro,'ResponseVar','CE_IPERTENSIONE', 'PredictorVars',{'CE_DIABETE','CE_ECCESSO_PESO','CE_MA_ALLERGICHE'});
 CE_res = CE_lm1.Residuals.Raw;
-%% JB Test residui Centro
+
+% JB Test residui Centro
 x4 = CE_res;
 figure
 histfit(x4);
 title('Residui Centro');
 n = length(x4);
 JBdata = (skewness(x4).^2)*n/6+((kurtosis(x4)-3).^2)*n/24;
+
 % Simulazione MC
 m = 1000;
 X0 = randn(m,n);
@@ -231,7 +246,7 @@ JB1 = (skewness(X1').^2)*n/6+((kurtosis(X1')-3).^2)*n/24;
 potenza = mean(JB1>JBcrit);
 disp(['potenza test_CE: ',num2str(potenza)]);
 
-% 1, Grafico dei residui (media uguale a 0)
+% 1. Grafico dei residui (media uguale a 0)
 plot(CE_res)
 ylabel('Residui')
 xlabel('Osservazioni')
@@ -266,19 +281,24 @@ yline(-3, '--b')
 % 5. Varianza dei residui
 plotResiduals(CE_lm1, 'fitted', 'Marker','o')
 
+
 %% OLS per ISOLE %%
+
 % Modello Completo
 IS_lm1 = fitlm(tIsole,'ResponseVar','IS_IPERTENSIONE', 'PredictorVars',{'IS_DIABETE','IS_ECCESSO_PESO','IS_MA_ALLERGICHE'});
+
 % No eccesso di peso
 IS_lm2 = fitlm(tIsole,'ResponseVar','IS_IPERTENSIONE', 'PredictorVars',{'IS_DIABETE','IS_MA_ALLERGICHE'});
 IS_res = IS_lm2.Residuals.Raw;
-%%JB Test residui Isole
+
+% JB Test residui Isole
 x5=IS_res;
 figure
 histfit(x5);
 title('Residui Isole');
 n=length(x5);
 JBdata=(skewness(x5).^2)*n/6+((kurtosis(x5)-3).^2)*n/24;
+
 % Simulazione MC
 m=1000;
 X0=randn(m,n);
