@@ -329,7 +329,7 @@ plotResiduals(SU_lm1, 'fitted', 'Marker','o')
 % Modello Completo
 IS_lm1 = fitlm(tIsole,'ResponseVar','IS_IPERTENSIONE', 'PredictorVars',{'IS_DIABETE','IS_ECCESSO_PESO','IS_MA_ALLERGICHE'});
 
-% No eccesso di peso
+% No eccesso di peso (modello utilizzato)
 IS_lm2 = fitlm(tIsole,'ResponseVar','IS_IPERTENSIONE', 'PredictorVars',{'IS_DIABETE','IS_MA_ALLERGICHE'});
 IS_res = IS_lm2.Residuals.Raw;
 
@@ -356,3 +356,38 @@ X1=chi2rnd(2,m,n);
 JB1=(skewness(X1').^2)*n/6+((kurtosis(X1')-3).^2)*n/24;
 potenza=mean(JB1>JBcrit);
 disp(['potenza test_IS: ',num2str(potenza)]);
+
+% 1. Grafico dei residui (media uguale a 0)
+plot(IS_res)
+ylabel('Residui')
+xlabel('Osservazioni')
+yline(nanmean(IS_res), 'Color', 'b', 'LineWidth', 3)
+title('Grafico dei residui - Isole')
+
+% 2. Andamento dei Percentili
+qqplot(IS_res)
+title('Distribuzione Quantili teorici - Quantili residui standardizzati')
+
+% 3. Incorrelazione dei regressori con i residui
+[S,AX,BigAx,H,HAx] = plotmatrix(tIsole{:,{'IS_DIABETE','IS_ECCESSO_PESO','IS_MA_ALLERGICHE'}}, IS_res)
+title 'Correlazione Residui - Regressori'
+AX(1,1).YLabel.String = 'Residui'
+AX(1,1).XLabel.String = 'DIABETE'
+AX(1,2).XLabel.String = 'ECCESSO DI PESO'
+AX(1,3).XLabel.String = 'MALATTIE ALLERGICHE'
+
+% Verifica dell'incorrelazione tramite gli indici di correlazione
+IS_mat_corr_residui = corrcoef([IS_res, tIsole.IS_DIABETE,...
+    tIsole.IS_ECCESSO_PESO, tIsole.IS_MA_ALLERGICHE], 'Rows','complete');
+IS_res_corr_w_reg = IS_mat_corr_residui(2:end, 1) % Vettore di rho residui - regressori
+
+% 4. Ricerca degli outliers
+IS_residui_stud = IS_lm2.Residuals.Studentized;
+scatter(IS_lm2.Fitted, IS_residui_stud)
+xlabel("Fitted data")
+ylabel("Residui studentizzati")
+yline(3, '--b')
+yline(-3, '--b')
+
+% 5. Varianza dei residui
+plotResiduals(IS_lm2, 'fitted', 'Marker','o')
