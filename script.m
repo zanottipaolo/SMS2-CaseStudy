@@ -52,6 +52,13 @@ title("Casi di Malattie allergiche in Italia 1990 - 2014")
 legend("Nord Ovest", "Nord Est", "Centro", "Sud", "Isole")
 %% ------------------------------- %%
 
+%% Plot casi di Eccesso di peso in Italia %%
+figure
+plot(T.ANNO, T.NO_ECCESSO_PESO, T.ANNO, T.NE_ECCESSO_PESO, T.ANNO, T.CE_ECCESSO_PESO, T.ANNO, T.SU_ECCESSO_PESO, T.ANNO, T.IS_ECCESSO_PESO)
+title("Casi di Eccesso di peso in Italia 1990 - 2014")
+legend("Nord Ovest", "Nord Est", "Centro", "Sud", "Isole")
+%% ------------------------------- %%
+
 
 %% OLS per NORDOVEST %%
 
@@ -185,37 +192,6 @@ yline(-3, '--b')
 plotResiduals(NE_lm1, 'fitted', 'Marker','o')
 
 
-%% OLS per SUD %%
-
-% Modello Completo
-SU_lm1 = fitlm(tSud,'ResponseVar','SU_IPERTENSIONE', 'PredictorVars',{'SU_DIABETE','SU_ECCESSO_PESO','SU_MA_ALLERGICHE'});
-SU_res = SU_lm1.Residuals.Raw;
-
-% JB Test residui Sud
-x3=SU_res;
-figure
-histfit(x3);
-title('Residui Sud');
-n=length(x3);
-JBdata=(skewness(x3).^2)*n/6+((kurtosis(x3)-3).^2)*n/24;
-
-% Simulazione MC
-m=1000;
-X0=randn(m,n);
-JB0=(skewness(X0').^2)*n/6+((kurtosis(X0')-3).^2)*n/24;
-alpha=0.05;
-JBcrit=prctile(JB0,100*(1-alpha));
-disp(['JBcrit_SU: ',num2str(JBcrit)]);
-pval=mean(JB0>JBdata);
-stdp=sqrt(pval*(1-pval)/m);
-disp(['pvalue_SU: ',num2str(pval)]);
-disp(['dev std pvalue_SU: ',num2str(stdp)]);
-X1=chi2rnd(2,m,n);
-JB1=(skewness(X1').^2)*n/6+((kurtosis(X1')-3).^2)*n/24;
-potenza=mean(JB1>JBcrit);
-disp(['potenza test_SU: ',num2str(potenza)]);
-
-
 %% OLS per CENTRO %%
 
 % Modello Completo
@@ -280,6 +256,72 @@ yline(-3, '--b')
 
 % 5. Varianza dei residui
 plotResiduals(CE_lm1, 'fitted', 'Marker','o')
+
+
+%% OLS per SUD %%
+
+% Modello Completo
+SU_lm1 = fitlm(tSud,'ResponseVar','SU_IPERTENSIONE', 'PredictorVars',{'SU_DIABETE','SU_ECCESSO_PESO','SU_MA_ALLERGICHE'});
+SU_res = SU_lm1.Residuals.Raw;
+
+% JB Test residui Sud
+x3=SU_res;
+figure
+histfit(x3);
+title('Residui Sud');
+n=length(x3);
+JBdata=(skewness(x3).^2)*n/6+((kurtosis(x3)-3).^2)*n/24;
+
+% Simulazione MC
+m=1000;
+X0=randn(m,n);
+JB0=(skewness(X0').^2)*n/6+((kurtosis(X0')-3).^2)*n/24;
+alpha=0.05;
+JBcrit=prctile(JB0,100*(1-alpha));
+disp(['JBcrit_SU: ',num2str(JBcrit)]);
+pval=mean(JB0>JBdata);
+stdp=sqrt(pval*(1-pval)/m);
+disp(['pvalue_SU: ',num2str(pval)]);
+disp(['dev std pvalue_SU: ',num2str(stdp)]);
+X1=chi2rnd(2,m,n);
+JB1=(skewness(X1').^2)*n/6+((kurtosis(X1')-3).^2)*n/24;
+potenza=mean(JB1>JBcrit);
+disp(['potenza test_SU: ',num2str(potenza)]);
+
+% 1. Grafico dei residui (media uguale a 0)
+plot(SU_res)
+ylabel('Residui')
+xlabel('Osservazioni')
+yline(nanmean(SU_res), 'Color', 'b', 'LineWidth', 3)
+title('Grafico dei residui - Sud')
+
+% 2. Andamento dei Percentili
+qqplot(SU_res)
+title('Distribuzione Quantili teorici - Quantili residui standardizzati')
+
+% 3. Incorrelazione dei regressori con i residui
+[S,AX,BigAx,H,HAx] = plotmatrix(tSud{:,{'SU_DIABETE','SU_ECCESSO_PESO','SU_MA_ALLERGICHE'}}, SU_res)
+title 'Correlazione Residui - Regressori'
+AX(1,1).YLabel.String = 'Residui'
+AX(1,1).XLabel.String = 'DIABETE'
+AX(1,2).XLabel.String = 'ECCESSO DI PESO'
+AX(1,3).XLabel.String = 'MALATTIE ALLERGICHE'
+
+% Verifica dell'incorrelazione tramite gli indici di correlazione
+SU_mat_corr_residui = corrcoef([SU_res, tSud.SU_DIABETE,...
+    tSud.SU_ECCESSO_PESO, tSud.SU_MA_ALLERGICHE], 'Rows','complete');
+SU_res_corr_w_reg = SU_mat_corr_residui(2:end, 1) % Vettore di rho residui - regressori
+
+% 4. Ricerca degli outliers
+SU_residui_stud = SU_lm1.Residuals.Studentized;
+scatter(SU_lm1.Fitted, SU_residui_stud)
+xlabel("Fitted data")
+ylabel("Residui studentizzati")
+yline(3, '--b')
+yline(-3, '--b')
+
+% 5. Varianza dei residui
+plotResiduals(SU_lm1, 'fitted', 'Marker','o')
 
 
 %% OLS per ISOLE %%
