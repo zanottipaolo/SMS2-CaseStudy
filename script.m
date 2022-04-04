@@ -125,6 +125,8 @@ yline(-3, '--b')
 % 5. Varianza dei residui
 plotResiduals(NO_lm1, 'fitted', 'Marker','o')
 
+% 6. DW Test per autocorrelazione residui
+[p,DW]=dwtest(NO_lm1,'exact','both')
 
 %% OLS per NORDEST
 
@@ -191,6 +193,8 @@ yline(-3, '--b')
 % 5. Varianza dei residui
 plotResiduals(NE_lm1, 'fitted', 'Marker','o')
 
+% 6. DW Test per autocorrelazione residui
+[p,DW]=dwtest(NE_lm1,'exact','both')
 
 %% OLS per CENTRO %%
 
@@ -257,6 +261,8 @@ yline(-3, '--b')
 % 5. Varianza dei residui
 plotResiduals(CE_lm1, 'fitted', 'Marker','o')
 
+% 6. DW Test per autocorrelazione residui
+[p,DW]=dwtest(CE_lm1,'exact','both')
 
 %% OLS per SUD %%
 
@@ -323,6 +329,8 @@ yline(-3, '--b')
 % 5. Varianza dei residui
 plotResiduals(SU_lm1, 'fitted', 'Marker','o')
 
+% 6. DW Test per autocorrelazione residui
+[p,DW]=dwtest(SU_lm1,'exact','both')
 
 %% OLS per ISOLE %%
 
@@ -391,3 +399,6 @@ yline(-3, '--b')
 
 % 5. Varianza dei residui
 plotResiduals(IS_lm2, 'fitted', 'Marker','o')
+
+% 6. DW Test per autocorrelazione residui
+[p,DW]=dwtest(IS_lm1,'exact','both')
