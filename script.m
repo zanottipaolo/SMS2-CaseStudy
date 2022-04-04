@@ -114,6 +114,11 @@ NO_mat_corr_residui = corrcoef([NO_res, tNordOvest.NO_DIABETE,...
     tNordOvest.NO_ECCESSO_PESO, tNordOvest.NO_MA_ALLERGICHE], 'Rows','complete');
 NO_res_corr_w_reg = NO_mat_corr_residui(2:end, 1) % Vettore di rho residui - regressori
 
+autocorr(NO_res)
+xlabel('Lag')
+ylabel('Autocorrelazione dei Residui')
+title("Autocorrelazione")
+
 % 4. Ricerca degli outliers
 residui_studentizzati = NO_lm1.Residuals.Studentized;
 scatter(NO_lm1.Fitted, residui_studentizzati)
@@ -126,7 +131,10 @@ yline(-3, '--b')
 plotResiduals(NO_lm1, 'fitted', 'Marker','o')
 
 % 6. DW Test per autocorrelazione residui
-[p,DW]=dwtest(NO_lm1,'exact','both')
+[p,DW] = dwtest(NO_lm1,'exact','both')
+
+% ECM Test
+[Mean,Covariance] = ecmnmle(tNordOvest.NO_DIABETE)
 
 %% OLS per NORDEST
 
@@ -182,6 +190,11 @@ NE_mat_corr_residui = corrcoef([NE_res, tNordEst.NE_DIABETE,...
     tNordEst.NE_ECCESSO_PESO, tNordEst.NE_MA_ALLERGICHE], 'Rows','complete');
 NE_res_corr_w_reg = NE_mat_corr_residui(2:end, 1) % Vettore di rho residui - regressori
 
+autocorr(NE_res)
+xlabel('Lag')
+ylabel('Autocorrelazione dei Residui')
+title("Autocorrelazione")
+
 % 4. Ricerca degli outliers
 NE_residui_stud = NE_lm1.Residuals.Studentized;
 scatter(NE_lm1.Fitted, NE_residui_stud)
@@ -194,7 +207,7 @@ yline(-3, '--b')
 plotResiduals(NE_lm1, 'fitted', 'Marker','o')
 
 % 6. DW Test per autocorrelazione residui
-[p,DW]=dwtest(NE_lm1,'exact','both')
+[p,DW] = dwtest(NE_lm1,'exact','both')
 
 %% OLS per CENTRO %%
 
@@ -250,6 +263,11 @@ CE_mat_corr_residui = corrcoef([CE_res, tCentro.CE_DIABETE,...
     tCentro.CE_ECCESSO_PESO, tCentro.CE_MA_ALLERGICHE], 'Rows','complete');
 CE_res_corr_w_reg = CE_mat_corr_residui(2:end, 1) % Vettore di rho residui - regressori
 
+autocorr(CE_res)
+xlabel('Lag')
+ylabel('Autocorrelazione dei Residui')
+title("Autocorrelazione")
+
 % 4. Ricerca degli outliers
 CE_residui_stud = CE_lm1.Residuals.Studentized;
 scatter(CE_lm1.Fitted, CE_residui_stud)
@@ -262,7 +280,7 @@ yline(-3, '--b')
 plotResiduals(CE_lm1, 'fitted', 'Marker','o')
 
 % 6. DW Test per autocorrelazione residui
-[p,DW]=dwtest(CE_lm1,'exact','both')
+[p,DW] = dwtest(CE_lm1,'exact','both')
 
 %% OLS per SUD %%
 
@@ -318,6 +336,11 @@ SU_mat_corr_residui = corrcoef([SU_res, tSud.SU_DIABETE,...
     tSud.SU_ECCESSO_PESO, tSud.SU_MA_ALLERGICHE], 'Rows','complete');
 SU_res_corr_w_reg = SU_mat_corr_residui(2:end, 1) % Vettore di rho residui - regressori
 
+autocorr(SU_res)
+xlabel('Lag')
+ylabel('Autocorrelazione dei Residui')
+title("Autocorrelazione")
+
 % 4. Ricerca degli outliers
 SU_residui_stud = SU_lm1.Residuals.Studentized;
 scatter(SU_lm1.Fitted, SU_residui_stud)
@@ -330,7 +353,7 @@ yline(-3, '--b')
 plotResiduals(SU_lm1, 'fitted', 'Marker','o')
 
 % 6. DW Test per autocorrelazione residui
-[p,DW]=dwtest(SU_lm1,'exact','both')
+[p,DW] = dwtest(SU_lm1,'exact','both')
 
 %% OLS per ISOLE %%
 
@@ -389,6 +412,11 @@ IS_mat_corr_residui = corrcoef([IS_res, tIsole.IS_DIABETE,...
     tIsole.IS_ECCESSO_PESO, tIsole.IS_MA_ALLERGICHE], 'Rows','complete');
 IS_res_corr_w_reg = IS_mat_corr_residui(2:end, 1) % Vettore di rho residui - regressori
 
+autocorr(IS_res)
+xlabel('Lag')
+ylabel('Autocorrelazione dei Residui')
+title("Autocorrelazione")
+
 % 4. Ricerca degli outliers
 IS_residui_stud = IS_lm2.Residuals.Studentized;
 scatter(IS_lm2.Fitted, IS_residui_stud)
@@ -401,4 +429,4 @@ yline(-3, '--b')
 plotResiduals(IS_lm2, 'fitted', 'Marker','o')
 
 % 6. DW Test per autocorrelazione residui
-[p,DW]=dwtest(IS_lm1,'exact','both')
+[p,DW] = dwtest(IS_lm1,'exact','both')
