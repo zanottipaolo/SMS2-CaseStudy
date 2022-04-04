@@ -66,6 +66,8 @@ legend("Nord Ovest", "Nord Est", "Centro", "Sud", "Isole")
 NO_lm1 = fitlm(tNordOvest,'ResponseVar','NO_IPERTENSIONE', 'PredictorVars',{'NO_DIABETE','NO_ECCESSO_PESO','NO_MA_ALLERGICHE'});
 NO_res = NO_lm1.Residuals.Raw;
 
+plot(NO_lm1);
+
 % JB Test residui Nord Ovest
 x1 = NO_res;
 figure
@@ -142,6 +144,8 @@ plotResiduals(NO_lm1, 'fitted', 'Marker','o')
 NE_lm1 = fitlm(tNordEst,'ResponseVar','NE_IPERTENSIONE', 'PredictorVars',{'NE_DIABETE','NE_ECCESSO_PESO','NE_MA_ALLERGICHE'});
 NE_res = NE_lm1.Residuals.Raw;
 
+plot(NE_lm1);
+
 % JB Test residui Nord Est
 x2 = NE_res;
 figure
@@ -215,6 +219,8 @@ plotResiduals(NE_lm1, 'fitted', 'Marker','o')
 CE_lm1 = fitlm(tCentro,'ResponseVar','CE_IPERTENSIONE', 'PredictorVars',{'CE_DIABETE','CE_ECCESSO_PESO','CE_MA_ALLERGICHE'});
 CE_res = CE_lm1.Residuals.Raw;
 
+plot(CE_lm1);
+
 % JB Test residui Centro
 x4 = CE_res;
 figure
@@ -283,10 +289,11 @@ plotResiduals(CE_lm1, 'fitted', 'Marker','o')
 [p,DW] = dwtest(CE_lm1,'exact','both')
 
 %% OLS per SUD %%
-
 % Modello Completo
 SU_lm1 = fitlm(tSud,'ResponseVar','SU_IPERTENSIONE', 'PredictorVars',{'SU_DIABETE','SU_ECCESSO_PESO','SU_MA_ALLERGICHE'});
 SU_res = SU_lm1.Residuals.Raw;
+
+plot(SU_lm1);
 
 % JB Test residui Sud
 x3=SU_res;
@@ -363,6 +370,8 @@ IS_lm1 = fitlm(tIsole,'ResponseVar','IS_IPERTENSIONE', 'PredictorVars',{'IS_DIAB
 % No eccesso di peso (modello utilizzato)
 IS_lm2 = fitlm(tIsole,'ResponseVar','IS_IPERTENSIONE', 'PredictorVars',{'IS_DIABETE','IS_MA_ALLERGICHE'});
 IS_res = IS_lm2.Residuals.Raw;
+
+plot(IS_lm2);
 
 % JB Test residui Isole
 x5=IS_res;
