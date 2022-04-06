@@ -68,6 +68,24 @@ NO_res = NO_lm1.Residuals.Raw;
 
 plot(NO_lm1);
 
+Y = tNordOvest.NO_IPERTENSIONE;
+Y = fillmissing(Y,'linear')
+n = length(Y);
+X = [ones(n, 1) fillmissing(tNordOvest.NO_DIABETE,'linear') fillmissing(tNordOvest.NO_ECCESSO_PESO,'linear') fillmissing(tNordOvest.NO_MA_ALLERGICHE,'linear')];
+X = X(sum(isnan(X),2)==0,:);
+X = fillmissing(X, 'linear');
+% Verifica che il det(X'X) > 0
+det(X'*X);
+
+length(Y)
+length(X)
+
+% Stima di beta hat e y hat
+B_hat = (X'*X)\X'*Y;
+y_hat = X*B_hat;
+
+plot(T.ANNO, y_hat, T.ANNO, tNordOvest.NO_IPERTENSIONE)
+
 % JB Test residui Nord Ovest
 x1 = NO_res;
 figure
@@ -373,6 +391,10 @@ IS_res = IS_lm2.Residuals.Raw;
 
 plot(IS_lm2);
 
+% Massima verosomiglianza
+% histogram(IS_res)
+% mle(tIsole.IS_DIABETE, 'distribution','Normal', 'Alpha', .01)
+
 % JB Test residui Isole
 x5=IS_res;
 figure
@@ -439,3 +461,5 @@ plotResiduals(IS_lm2, 'fitted', 'Marker','o')
 
 % 6. DW Test per autocorrelazione residui
 [p,DW] = dwtest(IS_lm1,'exact','both')
+
+close all
