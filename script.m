@@ -68,12 +68,14 @@ NO_res = NO_lm1.Residuals.Raw;
 
 plot(NO_lm1);
 
-Y = tNordOvest.NO_IPERTENSIONE;
-Y = fillmissing(Y,'linear')
+%% STIMA DELLA Y
+Y = tNordOvest.NO_IPERTENSIONE; % Vera Y
+Y = fillmissing(Y,'linear') % Riempio i NaN con valori lineari
 n = length(Y);
 X = [ones(n, 1) fillmissing(tNordOvest.NO_DIABETE,'linear') fillmissing(tNordOvest.NO_ECCESSO_PESO,'linear') fillmissing(tNordOvest.NO_MA_ALLERGICHE,'linear')];
 X = X(sum(isnan(X),2)==0,:);
 X = fillmissing(X, 'linear');
+
 % Verifica che il det(X'X) > 0
 det(X'*X);
 
@@ -81,10 +83,46 @@ length(Y)
 length(X)
 
 % Stima di beta hat e y hat
-B_hat = (X'*X)\X'*Y;
-y_hat = X*B_hat;
+NO_B_hat = (X'*X)\X'*Y; %1°: Intercetta
+NO_y_hat = X*B_hat;
 
+% Plotto la reale y con quella stimata
 plot(T.ANNO, y_hat, T.ANNO, tNordOvest.NO_IPERTENSIONE)
+title("Ipertensione stimata - Ipertensione reale")
+legend("Y HAT", "Y REAL")
+xlabel("Anno")
+ylabel("Casi di ipertensione (%)")
+grid;
+
+% Calcolo di devianza totale, residua, spiegata e di R^2 manualmente
+mY = mean(Y);
+Dtot = sum((Y-mY).^2);
+Dres = sum((Y-y_hat).^2);
+Dsp = sum((y_hat-mY).^2);
+R2 = 1-(Dres/Dtot);
+
+% Calcolo dello scarto quadratico medio
+k = 2;
+s2e = Dres/(n - k - 1);
+s = sqrt(s2e);
+
+% Plot residui dal fitlm e dai Min Quad. manualmente calcolati
+residuals = Y - y_hat;
+plot([1:length(residuals)], residuals, [1:length(NO_res)], NO_res)
+title("Residui OLS fitlm - OLS manuali")
+legend("Manuali", "fitlm")
+xlabel("Osservazione")
+ylabel("Residuo")
+grid;
+
+alpha = .05;
+[h1,p1,jbstat1,critval1] = jbtest(residuals, alpha);
+
+%Matrice δ
+delta = (X'*residuals)/n;
+
+% Delta ha tutti i componenti ≃ 0, quindi si può concludere che la stima
+% dei Beta sia non distorta.
 
 % JB Test residui Nord Ovest
 x1 = NO_res;
