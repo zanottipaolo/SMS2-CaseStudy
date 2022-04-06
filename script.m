@@ -76,6 +76,8 @@ X = [ones(n, 1) fillmissing(tNordOvest.NO_DIABETE,'linear') fillmissing(tNordOve
 X = X(sum(isnan(X),2)==0,:);
 X = fillmissing(X, 'linear');
 
+plot(T.ANNO, Y, T.ANNO, tNordOvest.NO_IPERTENSIONE)
+
 % Verifica che il det(X'X) > 0
 det(X'*X);
 
@@ -99,7 +101,7 @@ mY = mean(Y);
 Dtot = sum((Y-mY).^2);
 Dres = sum((Y-y_hat).^2);
 Dsp = sum((y_hat-mY).^2);
-R2 = 1-(Dres/Dtot);
+R2 = 1 - (Dres / Dtot);
 
 % Calcolo dello scarto quadratico medio
 k = 2;
