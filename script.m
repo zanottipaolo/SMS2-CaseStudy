@@ -4,11 +4,108 @@
 % Zanotti Paolo         1074166
 
 T = readtable('Dataset_sanitario.csv');
-tNordOvest = T(:, 2:5);
-tNordEst = T(:, 6:9);
-tCentro = T(:, 10:13);
-tSud = T(:, 14:17);
+tNordOvest = T(:, 2:6);
+tNordEst = T(:, 7:10);
+tCentro = T(:, 11:14);
+tSud = T(:, 15:18);
 tIsole = T(:, 18:end);
+
+rows = any(isnan(tNordOvest{:,:}),2);
+tNordOvest(rows,:) = [];
+tNordOvest(:,3) = []
+
+Ep = cov(tNordOvest{:,:}, 'omitrows')
+det(Ep)
+eig(Ep)
+
+x1 = tNordOvest.NO_DIABETE;
+x2 = tNordOvest.NO_MA_ALLERGICHE;
+%x3 = tNordOvest.NO_IPERTENSIONE;
+x4 = tNordOvest.NO_ECCESSO_PESO;
+x5 = tNordOvest.NO_MA_RESPIRATORIE;
+x = [x1 x2 x4 x5]
+
+m1 = mean(tNordOvest.NO_DIABETE);
+m2 = mean(tNordOvest.NO_MA_ALLERGICHE);
+% m3 = mean(tNordOvest.NO_IPERTENSIONE);
+m4 = mean(tNordOvest.NO_ECCESSO_PESO);
+m5 = mean(tNordOvest.NO_MA_RESPIRATORIE);
+mu = [m1 m2 m4 m5]
+
+n = length(x)
+
+s_sk = 0;
+s_ku = 0;
+for i = 1:length(x)
+    for j = 1:length(x)
+        if i ~= j
+            s_sk = s_sk + ((x(i,:) - mu)*Ep^(-1)*(x(j,:) - mu)')^3;
+        end 
+    end
+    s_ku = s_ku + ((x(i,:) - mu)*Ep^(-1)*(x(i,:) - mu)')^2;
+end
+sk = (s_sk / n^2)
+ku = (s_ku / n) - width(x)*(width(x)+2)
+
+JBdata = (sk.^2)*n/6+((ku).^2)*n/24;
+
+m=1000;
+X0=randn(m,n);
+JB0=(skewness(X0').^2)*n/6+((kurtosis(X0')-3).^2)*n/24;
+alpha=0.05;
+JBcrit=prctile(JB0,100*(1-alpha));
+disp(['JBcrit_IS: ',num2str(JBcrit)]);
+pval=mean(JB0>JBdata);
+stdp=sqrt(pval*(1-pval)/m);
+disp(['pvalue_IS: ',num2str(pval)]);
+disp(['dev std pvalue_IS: ',num2str(stdp)]);
+X1=chi2rnd(2,m,n);
+JB1=(skewness(X1').^2)*n/6+((kurtosis(X1')-3).^2)*n/24;
+potenza=mean(JB1>JBcrit);
+disp(['potenza test_IS: ',num2str(potenza)]);
+
+%% Test di normalità dei regressori
+% JB Test - DIABETE NORD OVEST
+A = tNordOvest.NO_DIABETE(sum(isnan(tNordOvest.NO_DIABETE),2)==0);
+n = length(A);
+JBdata = (skewness(A).^2)*n/6+((kurtosis(A)-3).^2)*n/24;
+% Simulazione MC
+m = 1000;
+X0 = randn(m,n);
+JB0 = (skewness(X0').^2)*n/6+((kurtosis(X0')-3).^2)*n/24;
+alpha = 0.05;
+JBcrit = prctile(JB0,100*(1-alpha));
+disp(['JBcrit Diabete NO: ',num2str(JBcrit)]);
+pval = mean(JB0 > JBdata);
+stdp = sqrt(pval*(1-pval)/m);
+disp(['pvalue Diabete NO: ',num2str(pval)]);
+disp(['dev std pvalue Diabete NO: ',num2str(stdp)]);
+X1 = chi2rnd(2,m,n);
+JB1 = (skewness(X1').^2)*n/6+((kurtosis(X1')-3).^2)*n/24;
+potenza = mean(JB1>JBcrit);
+disp(['potenza test Diabete NO: ',num2str(potenza)]);
+
+% JB Test - MALATTIE ALLERGICHE NORD OVEST
+A = tNordOvest.NO_MA_ALLERGICHE(sum(isnan(tNordOvest.NO_MA_ALLERGICHE),2)==0);
+n = length(A);
+JBdata = (skewness(A).^2)*n/6+((kurtosis(A)-3).^2)*n/24;
+% Simulazione MC
+m = 1000;
+X0 = randn(m,n);
+JB0 = (skewness(X0').^2)*n/6+((kurtosis(X0')-3).^2)*n/24;
+alpha = 0.05;
+JBcrit = prctile(JB0,100*(1-alpha));
+disp(['JBcrit M. allergiche NO: ',num2str(JBcrit)]);
+pval = mean(JB0 > JBdata);
+stdp = sqrt(pval*(1-pval)/m);
+disp(['pvalue M. allergiche NO: ',num2str(pval)]);
+disp(['dev std pvalue M. allergiche NO: ',num2str(stdp)]);
+X1 = chi2rnd(2,m,n);
+JB1 = (skewness(X1').^2)*n/6+((kurtosis(X1')-3).^2)*n/24;
+potenza = mean(JB1>JBcrit);
+disp(['potenza test M. allergiche NO: ',num2str(potenza)]);
+
+
 
 %% Matrice di correlazione
 NO_corr = array2table(corr(tNordOvest{:,:}, 'rows','complete'));
@@ -86,10 +183,10 @@ length(X)
 
 % Stima di beta hat e y hat
 NO_B_hat = (X'*X)\X'*Y; %1°: Intercetta
-NO_y_hat = X*B_hat;
+NO_y_hat = X*NO_B_hat;
 
 % Plotto la reale y con quella stimata
-plot(T.ANNO, y_hat, T.ANNO, tNordOvest.NO_IPERTENSIONE)
+plot(T.ANNO, NO_y_hat, T.ANNO, tNordOvest.NO_IPERTENSIONE)
 title("Ipertensione stimata - Ipertensione reale")
 legend("Y HAT", "Y REAL")
 xlabel("Anno")
@@ -99,8 +196,8 @@ grid;
 % Calcolo di devianza totale, residua, spiegata e di R^2 manualmente
 mY = mean(Y);
 Dtot = sum((Y-mY).^2);
-Dres = sum((Y-y_hat).^2);
-Dsp = sum((y_hat-mY).^2);
+Dres = sum((Y-NO_y_hat).^2);
+Dsp = sum((NO_y_hat-mY).^2);
 R2 = 1 - (Dres / Dtot);
 
 % Calcolo dello scarto quadratico medio
@@ -109,7 +206,7 @@ s2e = Dres/(n - k - 1);
 s = sqrt(s2e);
 
 % Plot residui dal fitlm e dai Min Quad. manualmente calcolati
-residuals = Y - y_hat;
+residuals = Y - NO_y_hat;
 plot([1:length(residuals)], residuals, [1:length(NO_res)], NO_res)
 title("Residui OLS fitlm - OLS manuali")
 legend("Manuali", "fitlm")
@@ -432,8 +529,8 @@ IS_res = IS_lm2.Residuals.Raw;
 plot(IS_lm2);
 
 % Massima verosomiglianza
-% histogram(IS_res)
-% mle(tIsole.IS_DIABETE, 'distribution','Normal', 'Alpha', .01)
+histogram(IS_res)
+mle(tIsole.IS_DIABETE, 'distribution','Normal', 'Alpha', .01)
 
 % JB Test residui Isole
 x5=IS_res;
