@@ -10,102 +10,67 @@ tCentro = T(:, 11:14);
 tSud = T(:, 15:18);
 tIsole = T(:, 18:end);
 
+%% Stima dei dati mancanti tramite Mardia - Non soddisfacente
+Mardia_tNordOvest = tNordOvest;
 rows = any(isnan(tNordOvest{:,:}),2);
-tNordOvest(rows,:) = [];
-tNordOvest(:,3) = []
+Mardia_tNordOvest(rows,:) = [];
+Mardia_tNordOvest(:,3) = []
 
-Ep = cov(tNordOvest{:,:}, 'omitrows')
+Ep = cov(Mardia_tNordOvest{:,:}, 'omitrows')
 det(Ep)
 eig(Ep)
 
-x1 = tNordOvest.NO_DIABETE;
-x2 = tNordOvest.NO_MA_ALLERGICHE;
-%x3 = tNordOvest.NO_IPERTENSIONE;
-x4 = tNordOvest.NO_ECCESSO_PESO;
-x5 = tNordOvest.NO_MA_RESPIRATORIE;
+x1 = Mardia_tNordOvest.NO_DIABETE;
+x2 = Mardia_tNordOvest.NO_MA_ALLERGICHE;
+x4 = Mardia_tNordOvest.NO_ECCESSO_PESO;
+x5 = Mardia_tNordOvest.NO_MA_RESPIRATORIE;
 x = [x1 x2 x4 x5]
 
-m1 = mean(tNordOvest.NO_DIABETE);
-m2 = mean(tNordOvest.NO_MA_ALLERGICHE);
-% m3 = mean(tNordOvest.NO_IPERTENSIONE);
-m4 = mean(tNordOvest.NO_ECCESSO_PESO);
-m5 = mean(tNordOvest.NO_MA_RESPIRATORIE);
+m1 = mean(Mardia_tNordOvest.NO_DIABETE);
+m2 = mean(Mardia_tNordOvest.NO_MA_ALLERGICHE);
+m4 = mean(Mardia_tNordOvest.NO_ECCESSO_PESO);
+m5 = mean(Mardia_tNordOvest.NO_MA_RESPIRATORIE);
 mu = [m1 m2 m4 m5]
-
-n = length(x)
 
 Mskekur(x, 1, 0.05)
 
-s_sk = 0;
-s_ku = 0;
-for i = 1:n
-    for j = 1:n
-        if i ~= j
-            s_sk = s_sk + ((x(i,:) - mu)*Ep^(-1)*(x(j,:) - mu)')^3;
-        end 
+%% Stima dei dati mancanti con media mobile
+T_Stimata = T;
+steps = 3;
+for i = 1:width(T_Stimata)
+    for j = 1:height(T_Stimata)
+        if isnan(T_Stimata{j,i})
+            lower = j - steps;
+            upper = j + steps;
+
+            if lower < 1
+                lower = 1;
+            end
+            if upper > width(T_Stimata)
+                upper = width(T_Stimata);
+            end
+            sum = 0;
+            count = 0;
+            for k = lower:upper
+                if isnan(T_Stimata{k, i})  
+                else
+                    sum = sum + T_Stimata{k, i};
+                    count = count + 1;
+                end
+            end
+            T_Stimata{j,i} = sum / count;
+        end
     end
-    s_ku = s_ku + ((x(i,:) - mu)*Ep^(-1)*(x(i,:) - mu)')^2;
 end
-sk = (s_sk / n^2)
-ku = (s_ku / n) - width(x)*(width(x)+2)
 
-JBdata = (sk.^2)*n/6+((ku).^2)*n/24;
+subplot(2,1,1)
+x = T.ANNO;
+y1 = T_Stimata{:,2:end};
+plot(x,y1)
 
-m=1000;
-X0=randn(m,n);
-JB0=(skewness(X0').^2)*n/6+((kurtosis(X0')-3).^2)*n/24;
-alpha=0.05;
-JBcrit=prctile(JB0,100*(1-alpha));
-disp(['JBcrit_IS: ',num2str(JBcrit)]);
-pval=mean(JB0>JBdata);
-stdp=sqrt(pval*(1-pval)/m);
-disp(['pvalue_IS: ',num2str(pval)]);
-disp(['dev std pvalue_IS: ',num2str(stdp)]);
-X1=chi2rnd(2,m,n);
-JB1=(skewness(X1').^2)*n/6+((kurtosis(X1')-3).^2)*n/24;
-potenza=mean(JB1>JBcrit);
-disp(['potenza test_IS: ',num2str(potenza)]);
-
-%% Test di normalità dei regressori
-% JB Test - DIABETE NORD OVEST
-A = tNordOvest.NO_DIABETE(sum(isnan(tNordOvest.NO_DIABETE),2)==0);
-n = length(A);
-JBdata = (skewness(A).^2)*n/6+((kurtosis(A)-3).^2)*n/24;
-% Simulazione MC
-m = 1000;
-X0 = randn(m,n);
-JB0 = (skewness(X0').^2)*n/6+((kurtosis(X0')-3).^2)*n/24;
-alpha = 0.05;
-JBcrit = prctile(JB0,100*(1-alpha));
-disp(['JBcrit Diabete NO: ',num2str(JBcrit)]);
-pval = mean(JB0 > JBdata);
-stdp = sqrt(pval*(1-pval)/m);
-disp(['pvalue Diabete NO: ',num2str(pval)]);
-disp(['dev std pvalue Diabete NO: ',num2str(stdp)]);
-X1 = chi2rnd(2,m,n);
-JB1 = (skewness(X1').^2)*n/6+((kurtosis(X1')-3).^2)*n/24;
-potenza = mean(JB1>JBcrit);
-disp(['potenza test Diabete NO: ',num2str(potenza)]);
-
-% JB Test - MALATTIE ALLERGICHE NORD OVEST
-A = tNordOvest.NO_MA_ALLERGICHE(sum(isnan(tNordOvest.NO_MA_ALLERGICHE),2)==0);
-n = length(A);
-JBdata = (skewness(A).^2)*n/6+((kurtosis(A)-3).^2)*n/24;
-% Simulazione MC
-m = 1000;
-X0 = randn(m,n);
-JB0 = (skewness(X0').^2)*n/6+((kurtosis(X0')-3).^2)*n/24;
-alpha = 0.05;
-JBcrit = prctile(JB0,100*(1-alpha));
-disp(['JBcrit M. allergiche NO: ',num2str(JBcrit)]);
-pval = mean(JB0 > JBdata);
-stdp = sqrt(pval*(1-pval)/m);
-disp(['pvalue M. allergiche NO: ',num2str(pval)]);
-disp(['dev std pvalue M. allergiche NO: ',num2str(stdp)]);
-X1 = chi2rnd(2,m,n);
-JB1 = (skewness(X1').^2)*n/6+((kurtosis(X1')-3).^2)*n/24;
-potenza = mean(JB1>JBcrit);
-disp(['potenza test M. allergiche NO: ',num2str(potenza)]);
+subplot(2,1,2); 
+y2 = T{:,2:end};
+plot(x,y2)
 
 
 
