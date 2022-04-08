@@ -63,6 +63,7 @@ for i = 1:width(T_Stimata)
     end
 end
 
+% Plot del dataset dato, con quello stimato
 subplot(2,1,1)
 x = T.ANNO;
 y1 = T_Stimata{:,2:end};
@@ -72,6 +73,7 @@ subplot(2,1,2);
 y2 = T{:,2:end};
 plot(x,y2)
 
+close all
 
 
 %% Matrice di correlazione
