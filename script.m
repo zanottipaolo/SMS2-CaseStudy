@@ -34,10 +34,12 @@ mu = [m1 m2 m4 m5]
 
 n = length(x)
 
+Mskekur(x, 1, 0.05)
+
 s_sk = 0;
 s_ku = 0;
-for i = 1:length(x)
-    for j = 1:length(x)
+for i = 1:n
+    for j = 1:n
         if i ~= j
             s_sk = s_sk + ((x(i,:) - mu)*Ep^(-1)*(x(j,:) - mu)')^3;
         end 
