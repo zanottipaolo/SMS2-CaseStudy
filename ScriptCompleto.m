@@ -1,3 +1,8 @@
+% Owners:
+% De Duro Federico      1073477
+% Medolago Emanuele     1058907    
+% Zanotti Paolo         1074166
+
 close all
 clearvars
 clc
