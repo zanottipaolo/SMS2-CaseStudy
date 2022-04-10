@@ -19,23 +19,12 @@ rows = any(isnan(tNordOvest{:,:}),2);
 Mardia_tNordOvest(rows,:) = [];
 Mardia_tNordOvest(:,3) = [];
 
-Ep = cov(Mardia_tNordOvest{:,:}, 'omitrows')
-det(Ep)
-eig(Ep)
-
 x1 = Mardia_tNordOvest.NO_DIABETE;
 x2 = Mardia_tNordOvest.NO_MA_ALLERGICHE;
 x3 = Mardia_tNordOvest.NO_SEDENTARI;
 x4 = Mardia_tNordOvest.NO_ECCESSO_PESO;
 x5 = Mardia_tNordOvest.NO_MA_RESPIRATORIE;
 x = [x1 x2 x3 x4 x5]
-
-m1 = mean(Mardia_tNordOvest.NO_DIABETE);
-m2 = mean(Mardia_tNordOvest.NO_MA_ALLERGICHE);
-m3 = mean(Mardia_tNordOvest.NO_SEDENTARI);
-m4 = mean(Mardia_tNordOvest.NO_ECCESSO_PESO);
-m5 = mean(Mardia_tNordOvest.NO_MA_RESPIRATORIE);
-mu = [m1 m2 m3 m4 m5]
 
 Mskekur(x, 1, 0.05)
 
@@ -86,6 +75,7 @@ tNordEst = T_Stimata(:, 8:13);
 tCentro = T_Stimata(:, 14:19);
 tSud = T_Stimata(:, 20:25);
 tIsole = T_Stimata(:, 26:end);
+
 %% Matrici di correlazione
 NO_corr = array2table(corr(tNordOvest{:,:}, 'rows','complete'));
 NO_corr.Properties.VariableNames = {'Diabete','Malattie Allergiche', 'Ipertensione','Peso','Malattie Respiratorie', 'Sedentari'};
