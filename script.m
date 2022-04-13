@@ -57,7 +57,6 @@ for i = 1:width(T_Stimata)
     end
 end
 
-
 % Plot del dataset dato, con quello stimato
 subplot(2,1,1)
 x = T.ANNO;
@@ -80,6 +79,22 @@ tIsole = T_Stimata(:, 26:end);
 NO_corr = array2table(corr(tNordOvest{:,:}, 'rows','complete'));
 NO_corr.Properties.VariableNames = {'Diabete','Malattie Allergiche', 'Ipertensione','Peso','Malattie Respiratorie', 'Sedentari'};
 NO_corr.Properties.RowNames = {'Diabete','Malattie Allergiche', 'Ipertensione','Peso','Malattie Respiratorie', 'Sedentari'}
+
+PM = tNordOvest;
+PM(:, 3) = []
+[S,AX,BigAx,H,HAx] = plotmatrix(PM{:,:});
+title 'Matrice Grafici di correlazione';
+AX(1,1).YLabel.String = 'Diabete'; 
+AX(2,1).YLabel.String = 'Ma. allergiche';  
+AX(3,1).YLabel.String = 'Ec. di peso'; 
+AX(4,1).YLabel.String = 'Ma. respiratorie'; 
+AX(5,1).YLabel.String = 'Sedentari';
+
+AX(5,1).XLabel.String = 'Diabete'; 
+AX(5,2).XLabel.String = 'Ma. allergiche';
+AX(5,3).XLabel.String = 'Ec. di peso'; 
+AX(5,4).XLabel.String = 'Ma. respiratorie'; 
+AX(5,5).XLabel.String = 'Sedentari';
 
 NE_corr = array2table(corr(tNordEst{:,:}, 'rows','complete'));
 NE_corr.Properties.VariableNames = {'Diabete','Malattie Allergiche', 'Ipertensione','Peso','Malattie Respiratorie', 'Sedentari'};
@@ -809,3 +824,4 @@ plotResiduals(IS_lm2, 'fitted', 'Marker','o')
 % 6. DW Test per autocorrelazione residui
 [p,DW] = dwtest(IS_lm1,'exact','both')
 
+close all
