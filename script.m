@@ -80,25 +80,32 @@ NO_corr = array2table(corr(tNordOvest{:,:}, 'rows','complete'));
 NO_corr.Properties.VariableNames = {'Diabete','Malattie Allergiche', 'Ipertensione','Peso','Malattie Respiratorie', 'Sedentari'};
 NO_corr.Properties.RowNames = {'Diabete','Malattie Allergiche', 'Ipertensione','Peso','Malattie Respiratorie', 'Sedentari'}
 
-PM = tNordOvest;
-PM(:, 3) = []
-[S,AX,BigAx,H,HAx] = plotmatrix(PM{:,:});
-title 'Matrice Grafici di correlazione';
-AX(1,1).YLabel.String = 'Diabete'; 
-AX(2,1).YLabel.String = 'Ma. allergiche';  
-AX(3,1).YLabel.String = 'Ec. di peso'; 
-AX(4,1).YLabel.String = 'Ma. respiratorie'; 
-AX(5,1).YLabel.String = 'Sedentari';
-
-AX(5,1).XLabel.String = 'Diabete'; 
-AX(5,2).XLabel.String = 'Ma. allergiche';
-AX(5,3).XLabel.String = 'Ec. di peso'; 
-AX(5,4).XLabel.String = 'Ma. respiratorie'; 
-AX(5,5).XLabel.String = 'Sedentari';
-
 NE_corr = array2table(corr(tNordEst{:,:}, 'rows','complete'));
 NE_corr.Properties.VariableNames = {'Diabete','Malattie Allergiche', 'Ipertensione','Peso','Malattie Respiratorie', 'Sedentari'};
 NE_corr.Properties.RowNames = {'Diabete','Malattie Allergiche', 'Ipertensione','Peso','Malattie Respiratorie', 'Sedentari'}
+
+PM = tNordEst;
+[S,AX,BigAx,H,HAx] = plotmatrix(PM{:,:});
+title 'Matrice Grafici di correlazione';
+AX(1,1).YLabel.String = 'Diabete'; 
+AX(2,1).YLabel.String = 'Ma. allergiche';
+AX(3,1).YLabel.String = 'Ipertensione'; 
+AX(4,1).YLabel.String = 'Ec. di peso'; 
+AX(5,1).YLabel.String = 'Ma. respiratorie'; 
+AX(6,1).YLabel.String = 'Sedentari';
+
+AX(6,1).XLabel.String = 'Diabete'; 
+AX(6,2).XLabel.String = 'Ma. allergiche';
+AX(6,3).XLabel.String = 'Ipertensione'; 
+AX(6,4).XLabel.String = 'Ec. di peso'; 
+AX(6,5).XLabel.String = 'Ma. respiratorie'; 
+AX(6,6).XLabel.String = 'Sedentari';
+
+S(3,1).Color = 'r';
+S(3,2).Color = 'r';
+S(3,4).Color = 'r';
+S(3,5).Color = 'r';
+S(3,6).Color = 'r';
 
 CE_corr = array2table(corr(tCentro{:,:}, 'rows','complete'));
 CE_corr.Properties.VariableNames = {'Diabete','Malattie Allergiche', 'Ipertensione','Peso','Malattie Respiratorie', 'Sedentari'};
@@ -338,6 +345,7 @@ x3NE=[v tNordEst.NE_ECCESSO_PESO tNordEst.NE_DIABETE tNordEst.NE_MA_ALLERGICHE];
 x4NE=[v tNordEst.NE_ECCESSO_PESO tNordEst.NE_DIABETE tNordEst.NE_MA_ALLERGICHE tNordEst.NE_SEDENTARI];
 x5NE=[v tNordEst.NE_ECCESSO_PESO tNordEst.NE_DIABETE tNordEst.NE_MA_ALLERGICHE tNordEst.NE_SEDENTARI tNordEst.NE_MA_RESPIRATORIE];
 YNE=tNordEst.NE_IPERTENSIONE;
+
 % Creazione grafico crossvalidazione
 figure('Name','Crossvalidazione Nord Est','NumberTitle','off')
 subplot(2, 1, 1)
