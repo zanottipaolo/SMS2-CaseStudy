@@ -210,11 +210,15 @@ NO_res = NO_lm1.Residuals.Raw;
 figure
 plot(NO_lm1);
 
+% Verifica ottimalità con GLS
+NO_Glm = fitglm(tNordOvest,'ResponseVar','NO_IPERTENSIONE', 'PredictorVars',{'NO_DIABETE','NO_ECCESSO_PESO','NO_MA_ALLERGICHE'})
+
+% Verifica non multicollinearità con det(X'X)>0
+determinante_NO = det(x3NO'*x3NO)
+
 %% STIMA DELLA Y
 Y = tNordOvest.NO_IPERTENSIONE;
 X = x3NO;
-% Verifica che il det(X'X) > 0
-det(X'*X);
 
 length(Y);
 length(X);
@@ -385,6 +389,12 @@ NE_res = NE_lm1.Residuals.Raw;
 figure
 plot(NE_lm1);
 
+% Verifica ottimalità con GLS
+NE_Glm = fitglm(tNordEst,'ResponseVar','NE_IPERTENSIONE', 'PredictorVars',{'NE_DIABETE','NE_ECCESSO_PESO','NE_MA_ALLERGICHE'})
+
+% Verifica non multicollinearità con det(X'X)>0
+determinante_NE = det(x3NE'*x3NE)
+
 % JB Test residui Nord Est
 x2 = NE_res;
 figure
@@ -508,6 +518,12 @@ CE_res = CE_lm1.Residuals.Raw;
 figure
 plot(CE_lm1);
 
+% Verifica ottimalità con GLS
+CE_Glm = fitglm(tCentro,'ResponseVar','CE_IPERTENSIONE', 'PredictorVars',{'CE_DIABETE','CE_ECCESSO_PESO','CE_MA_ALLERGICHE'})
+
+% Verifica non multicollinearità con det(X'X)>0
+determinante_CE = det(x3CE'*x3CE)
+
 % JB Test residui Centro
 x4 = CE_res;
 figure
@@ -630,6 +646,12 @@ SU_res = SU_lm1.Residuals.Raw;
 
 figure
 plot(SU_lm1);
+
+% Verifica ottimalità con GLS
+SU_Glm = fitglm(tSud,'ResponseVar','SU_IPERTENSIONE', 'PredictorVars',{'SU_DIABETE','SU_ECCESSO_PESO','SU_MA_ALLERGICHE'})
+
+% Verifica non multicollinearità con det(X'X)>0
+determinante_SU = det(x3SU'*x3SU)
 
 % JB Test residui Sud
 x3=SU_res;
@@ -755,6 +777,12 @@ IS_res = IS_lm2.Residuals.Raw;
 
 figure
 plot(IS_lm2);
+
+% Verifica ottimalità con GLS
+IS_Glm = fitglm(tIsole,'ResponseVar','IS_IPERTENSIONE', 'PredictorVars',{'IS_DIABETE','IS_MA_ALLERGICHE'})
+
+% Verifica non multicollinearità con det(X'X)>0
+determinante_IS = det(x3IS'*x3IS)
 
 % Massima verosomiglianza
 figure
