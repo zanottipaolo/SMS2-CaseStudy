@@ -858,6 +858,6 @@ figure
 plotResiduals(IS_lm2, 'fitted', 'Marker','o')
 
 % 6. DW Test per autocorrelazione residui
-[p,DW] = dwtest(IS_lm1,'exact','both')
+[p,DW] = dwtest(IS_lm2,'exact','both')
 
 close all
