@@ -343,6 +343,9 @@ else
     disp("rifiuto l'ipotesi nulla, gli errori sono eteroschedastici")
 end
 
+% 8. t Test media residui (H0 : media=0):
+[h,p,ci,stats] = ttest(NO_res)
+
 %% OLS per NORDEST
 %%CROSS VALIDAZIONE NE
 % creazione regressori
@@ -473,6 +476,9 @@ if pval>0.05
 else
     disp("rifiuto l'ipotesi nulla, gli errori sono eteroschedastici")
 end
+
+% 8. t Test media residui (H0 : media=0):
+[h,p,ci,stats] = ttest(NE_res)
 
 %% OLS per CENTRO %%
 %%CROSS VALIDAZIONE Centro
@@ -605,6 +611,9 @@ else
     disp("rifiuto l'ipotesi nulla, gli errori sono eteroschedastici")
 end
 
+% 8. t Test media residui (H0 : media=0):
+[h,p,ci,stats] = ttest(CE_res)
+
 %% OLS per SUD %%
 %%CROSS VALIDAZIONE SUD
 % creazione regressori
@@ -735,6 +744,9 @@ if pval>0.05
 else
     disp("rifiuto l'ipotesi nulla, gli errori sono eteroschedastici")
 end
+
+% 8. t Test media residui (H0 : media=0):
+[h,p,ci,stats] = ttest(SU_res)
 
 %% OLS per ISOLE %%
 %%CROSS VALIDAZIONE ISOLE
@@ -871,5 +883,8 @@ if pval>0.05
 else
     disp("rifiuto l'ipotesi nulla, gli errori sono eteroschedastici")
 end
+
+% 8. t Test media residui (H0 : media=0):
+[h,p,ci,stats] = ttest(IS_res)
 
 close all
