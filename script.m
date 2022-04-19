@@ -335,6 +335,14 @@ plotResiduals(NO_lm1, 'fitted', 'Marker','o')
 % ECM Test
 [Mean,Covariance] = ecmnmle(tNordOvest.NO_DIABETE)
 
+% 7. Test di Breusch-Pagan per l'omoschedasticità
+pval=TestHet(NO_res,[tNordOvest.NO_ECCESSO_PESO tNordOvest.NO_DIABETE tNordOvest.NO_MA_ALLERGICHE], '-BPK')
+if pval>0.05
+    disp("accetto l'ipotesi nulla, gli errori sono omoschedastici")
+else
+    disp("rifiuto l'ipotesi nulla, gli errori sono eteroschedastici")
+end
+
 %% OLS per NORDEST
 %%CROSS VALIDAZIONE NE
 % creazione regressori
@@ -457,6 +465,14 @@ plotResiduals(NE_lm1, 'fitted', 'Marker','o')
 
 % 6. DW Test per autocorrelazione residui
 [p,DW] = dwtest(NE_lm1,'exact','both')
+
+% 7. Test di Breusch-Pagan per l'omoschedasticità
+pval=TestHet(NE_res,[tNordEst.NE_ECCESSO_PESO tNordEst.NE_DIABETE tNordEst.NE_MA_ALLERGICHE], '-BPK')
+if pval>0.05
+    disp("accetto l'ipotesi nulla, gli errori sono omoschedastici")
+else
+    disp("rifiuto l'ipotesi nulla, gli errori sono eteroschedastici")
+end
 
 %% OLS per CENTRO %%
 %%CROSS VALIDAZIONE Centro
@@ -581,6 +597,14 @@ plotResiduals(CE_lm1, 'fitted', 'Marker','o')
 % 6. DW Test per autocorrelazione residui
 [p,DW] = dwtest(CE_lm1,'exact','both')
 
+% 7. Test di Breusch-Pagan per l'omoschedasticità
+pval=TestHet(CE_res,[tCentro.CE_ECCESSO_PESO tCentro.CE_DIABETE tCentro.CE_MA_ALLERGICHE], '-BPK')
+if pval>0.05
+    disp("accetto l'ipotesi nulla, gli errori sono omoschedastici")
+else
+    disp("rifiuto l'ipotesi nulla, gli errori sono eteroschedastici")
+end
+
 %% OLS per SUD %%
 %%CROSS VALIDAZIONE SUD
 % creazione regressori
@@ -703,6 +727,14 @@ plotResiduals(SU_lm1, 'fitted', 'Marker','o')
 
 % 6. DW Test per autocorrelazione residui
 [p,DW] = dwtest(SU_lm1,'exact','both')
+
+% 7. Test di Breusch-Pagan per l'omoschedasticità
+pval=TestHet(SU_res,[tSud.SU_ECCESSO_PESO tSud.SU_DIABETE tSud.SU_MA_ALLERGICHE], '-BPK')
+if pval>0.05
+    disp("accetto l'ipotesi nulla, gli errori sono omoschedastici")
+else
+    disp("rifiuto l'ipotesi nulla, gli errori sono eteroschedastici")
+end
 
 %% OLS per ISOLE %%
 %%CROSS VALIDAZIONE ISOLE
@@ -831,5 +863,13 @@ plotResiduals(IS_lm2, 'fitted', 'Marker','o')
 
 % 6. DW Test per autocorrelazione residui
 [p,DW] = dwtest(IS_lm1,'exact','both')
+
+% 7. Test di Breusch-Pagan per l'omoschedasticità
+pval=TestHet(IS_res,[tIsole.IS_ECCESSO_PESO tIsole.IS_DIABETE tIsole.IS_MA_ALLERGICHE], '-BPK')
+if pval>0.05
+    disp("accetto l'ipotesi nulla, gli errori sono omoschedastici")
+else
+    disp("rifiuto l'ipotesi nulla, gli errori sono eteroschedastici")
+end
 
 close all
