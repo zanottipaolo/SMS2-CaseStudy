@@ -3,6 +3,10 @@
 % Medolago Emanuele     1058907    
 % Zanotti Paolo         1074166
 
+% Dependencies
+% 1. Mskekur (Mardia test)
+% 2. TestHet (heteroskedasticity)
+
 close all
 clearvars
 clc
