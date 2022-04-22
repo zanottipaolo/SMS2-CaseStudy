@@ -6,7 +6,7 @@
 close all
 clearvars
 clc
-T = readtable('Dataset_sanitario.csv');
+load('dataset.mat');
 tNordOvest = T(:, 2:7);
 tNordEst = T(:, 8:13);
 tCentro = T(:, 14:19);
