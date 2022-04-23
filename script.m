@@ -786,7 +786,7 @@ plot(IS_lm2);
 IS_Glm = fitglm(tIsole,'ResponseVar','IS_IPERTENSIONE', 'PredictorVars',{'IS_DIABETE','IS_MA_ALLERGICHE'})
 
 % Verifica non multicollinearità con det(X'X)>0
-determinante_IS = det(x3IS'*x3IS)
+determinante_IS = det(x2IS'*x2IS)
 
 % JB Test residui Isole
 x5=IS_res;
