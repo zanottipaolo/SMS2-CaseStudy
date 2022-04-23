@@ -8,6 +8,9 @@
 % 2. TestHet (heteroskedasticity)
 % 3. Statistics and Machine Learning Toolbox
 
+addpath("Mskekur\")
+addpath("tHet.m\")
+
 close all
 clearvars
 clc
