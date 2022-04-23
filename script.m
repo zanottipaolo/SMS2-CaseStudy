@@ -6,10 +6,12 @@
 % Dependencies
 % 1. Mskekur (Mardia test)
 % 2. TestHet (heteroskedasticity)
+% 3. Statistics and Machine Learning Toolbox
 
 close all
 clearvars
 clc
+
 load('dataset.mat');
 tNordOvest = T(:, 2:7);
 tNordEst = T(:, 8:13);
@@ -849,4 +851,4 @@ end
 % 8. t Test media residui (H0 : media=0):
 [h,p,ci,stats] = ttest(IS_res)
 
-%close all
+% close all
