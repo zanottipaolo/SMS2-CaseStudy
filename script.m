@@ -214,55 +214,6 @@ NO_res = NO_lm1.Residuals.Raw;
 figure
 plot(NO_lm1);
 
-%% STIMA DELLA Y
-Y = tNordOvest.NO_IPERTENSIONE;
-X = x3NO;
-% Verifica che il det(X'X) > 0
-det(X'*X);
-
-length(Y);
-length(X);
-
-% Stima di beta hat e y hat
-NO_B_hat = (X'*X)\X'*Y; %1°: Intercetta
-NO_y_hat = X*NO_B_hat;
-
-% Plotto la reale y con quella stimata
-plot(T.ANNO, NO_y_hat, T.ANNO, tNordOvest.NO_IPERTENSIONE)
-title("Ipertensione stimata - Ipertensione reale")
-legend("Y HAT", "Y REAL")
-xlabel("Anno")
-ylabel("Casi di ipertensione (%)")
-grid;
-
-% Calcolo di devianza totale, residua, spiegata e di R^2 manualmente
-mY = mean(Y);
-Dtot = sum((Y-mY).^2);
-Dres = sum((Y-NO_y_hat).^2);
-Dsp = sum((NO_y_hat-mY).^2);
-R2 = 1 - (Dres / Dtot);
-
-% Calcolo dello scarto quadratico medio
-n=25;
-k = 3;
-s2e = Dres/(n - k - 1);
-s = sqrt(s2e);
-
-% Plot residui dal fitlm e dai Min Quad. manualmente calcolati
-residuals = Y - NO_y_hat;
-plot([1:length(residuals)], residuals, [1:length(NO_res)], NO_res)
-title("Residui OLS fitlm - OLS manuali")
-legend("Manuali", "fitlm")
-xlabel("Osservazione")
-ylabel("Residuo")
-grid;
-
-%Matrice δ
-delta = (X'*residuals)/n;
-
-% Delta ha tutti i componenti ≃ 0, quindi si può concludere che la stima
-% dei Beta sia non distorta.
-
 % JB Test residui Nord Ovest
 x1 = NO_res;
 figure
@@ -298,7 +249,7 @@ title('Grafico dei residui - Nord Ovest');
 % 2. Andamento dei Percentili
 figure
 qqplot(NO_res)
-title('Distribuzione Quantili teorici - Quantili residui standardizzati');
+title('Distribuzione Quantili teorici - Quantili residui standardizzati Nord Ovest');
 
 % 3. Incorrelazione dei regressori con i residui
 figure
@@ -308,6 +259,7 @@ AX(1,1).YLabel.String = 'Residui';
 AX(1,1).XLabel.String = 'DIABETE';
 AX(1,2).XLabel.String = 'ECCESSO DI PESO';
 AX(1,3).XLabel.String = 'MALATTIE ALLERGICHE';
+title('Correlazione Residui-Regressori Nord Ovest')
 
 % Verifica dell'incorrelazione tramite gli indici di correlazione
 NO_mat_corr_residui = corrcoef([NO_res, tNordOvest.NO_DIABETE,...
@@ -318,7 +270,7 @@ figure
 autocorr(NO_res)
 xlabel('Lag');
 ylabel('Autocorrelazione dei Residui');
-title("Autocorrelazione");
+title("Autocorrelazione Nord Ovest");
 
 % 4. Ricerca degli outliers
 residui_studentizzati = NO_lm1.Residuals.Studentized;
@@ -328,16 +280,15 @@ xlabel("Fitted data");
 ylabel("Residui studentizzati");
 yline(3, '--b');
 yline(-3, '--b');
+title('Residui studentizzati vs Fitted data Nord Ovest');
 
 % 5. Varianza dei residui
 figure
 plotResiduals(NO_lm1, 'fitted', 'Marker','o')
+title('Residuals vs Fitted data Nord Ovest')
 
 % 6. DW Test per autocorrelazione residui
 [p,DW] = dwtest(NO_lm1,'exact','both')
-
-% ECM Test
-[Mean,Covariance] = ecmnmle(tNordOvest.NO_DIABETE)
 
 % 7. Test di Breusch-Pagan per l'omoschedasticità
 pval=TestHet(NO_res,[tNordOvest.NO_ECCESSO_PESO tNordOvest.NO_DIABETE tNordOvest.NO_MA_ALLERGICHE], '-BPK')
@@ -435,7 +386,7 @@ title('Grafico dei residui - Nord Est');
 % 2. Andamento dei Percentili
 figure
 qqplot(NE_res)
-title('Distribuzione Quantili teorici - Quantili residui standardizzati');
+title('Distribuzione Quantili teorici - Quantili residui standardizzati Nord Est');
 
 % 3. Incorrelazione dei regressori con i residui
 figure
@@ -445,6 +396,7 @@ AX(1,1).YLabel.String = 'Residui';
 AX(1,1).XLabel.String = 'DIABETE';
 AX(1,2).XLabel.String = 'ECCESSO DI PESO';
 AX(1,3).XLabel.String = 'MALATTIE ALLERGICHE';
+title('Correlazione Residui-Regressori Nord Est')
 
 % Verifica dell'incorrelazione tramite gli indici di correlazione
 NE_mat_corr_residui = corrcoef([NE_res, tNordEst.NE_DIABETE,...
@@ -455,7 +407,7 @@ figure
 autocorr(NE_res)
 xlabel('Lag');
 ylabel('Autocorrelazione dei Residui');
-title("Autocorrelazione");
+title("Autocorrelazione Nord Est");
 
 % 4. Ricerca degli outliers
 NE_residui_stud = NE_lm1.Residuals.Studentized;
@@ -465,10 +417,12 @@ xlabel("Fitted data");
 ylabel("Residui studentizzati");
 yline(3, '--b');
 yline(-3, '--b');
+title('Residui studentizzati vs Fitted data Nord Est')
 
 % 5. Varianza dei residui
 figure
 plotResiduals(NE_lm1, 'fitted', 'Marker','o')
+title('Residuals vs Fitted data Nord Est')
 
 % 6. DW Test per autocorrelazione residui
 [p,DW] = dwtest(NE_lm1,'exact','both')
@@ -569,7 +523,7 @@ title('Grafico dei residui - Centro');
 % 2. Andamento dei Percentili
 figure
 qqplot(CE_res)
-title('Distribuzione Quantili teorici - Quantili residui standardizzati');
+title('Distribuzione Quantili teorici - Quantili residui standardizzati Centro');
 
 % 3. Incorrelazione dei regressori con i residui
 figure
@@ -579,6 +533,7 @@ AX(1,1).YLabel.String = 'Residui';
 AX(1,1).XLabel.String = 'DIABETE';
 AX(1,2).XLabel.String = 'ECCESSO DI PESO';
 AX(1,3).XLabel.String = 'MALATTIE ALLERGICHE';
+title('Correlazione Residui-Regressori Centro')
 
 % Verifica dell'incorrelazione tramite gli indici di correlazione
 CE_mat_corr_residui = corrcoef([CE_res, tCentro.CE_DIABETE,...
@@ -589,7 +544,7 @@ figure
 autocorr(CE_res)
 xlabel('Lag');
 ylabel('Autocorrelazione dei Residui');
-title("Autocorrelazione");
+title("Autocorrelazione Centro");
 
 % 4. Ricerca degli outliers
 CE_residui_stud = CE_lm1.Residuals.Studentized;
@@ -599,10 +554,12 @@ xlabel("Fitted data");
 ylabel("Residui studentizzati");
 yline(3, '--b');
 yline(-3, '--b');
+title('Residui studentizzati vs Fitted data Centro')
 
 % 5. Varianza dei residui
 figure
 plotResiduals(CE_lm1, 'fitted', 'Marker','o')
+title('Residuals vs Fitted data Centro')
 
 % 6. DW Test per autocorrelazione residui
 [p,DW] = dwtest(CE_lm1,'exact','both')
@@ -703,7 +660,7 @@ title('Grafico dei residui - Sud');
 % 2. Andamento dei Percentili
 figure
 qqplot(SU_res)
-title('Distribuzione Quantili teorici - Quantili residui standardizzati');
+title('Distribuzione Quantili teorici - Quantili residui standardizzati Sud');
 
 % 3. Incorrelazione dei regressori con i residui
 figure
@@ -713,6 +670,7 @@ AX(1,1).YLabel.String = 'Residui';
 AX(1,1).XLabel.String = 'DIABETE';
 AX(1,2).XLabel.String = 'ECCESSO DI PESO';
 AX(1,3).XLabel.String = 'MALATTIE ALLERGICHE';
+title('Correlazione Residui-Regressori Sud')
 
 % Verifica dell'incorrelazione tramite gli indici di correlazione
 SU_mat_corr_residui = corrcoef([SU_res, tSud.SU_DIABETE,...
@@ -723,7 +681,7 @@ figure
 autocorr(SU_res)
 xlabel('Lag')
 ylabel('Autocorrelazione dei Residui')
-title("Autocorrelazione")
+title("Autocorrelazione Sud")
 
 % 4. Ricerca degli outliers
 SU_residui_stud = SU_lm1.Residuals.Studentized;
@@ -733,10 +691,12 @@ xlabel("Fitted data")
 ylabel("Residui studentizzati")
 yline(3, '--b')
 yline(-3, '--b')
+title('Residui studentizzati vs Fitted data Sud')
 
 % 5. Varianza dei residui
 figure
 plotResiduals(SU_lm1, 'fitted', 'Marker','o')
+title('Residuals vs Fitted data Sud')
 
 % 6. DW Test per autocorrelazione residui
 [p,DW] = dwtest(SU_lm1,'exact','both')
@@ -844,7 +804,7 @@ title('Grafico dei residui - Isole');
 % 2. Andamento dei Percentili
 figure
 qqplot(IS_res)
-title('Distribuzione Quantili teorici - Quantili residui standardizzati');
+title('Distribuzione Quantili teorici - Quantili residui standardizzati Isole');
 
 % 3. Incorrelazione dei regressori con i residui
 figure
@@ -853,6 +813,7 @@ title 'Correlazione Residui - Regressori'
 AX(1,1).YLabel.String = 'Residui';
 AX(1,1).XLabel.String = 'DIABETE';
 AX(1,2).XLabel.String = 'MALATTIE ALLERGICHE';
+title('Correlazione Residui-Regressori Isole')
 
 % Verifica dell'incorrelazione tramite gli indici di correlazione
 IS_mat_corr_residui = corrcoef([IS_res, tIsole.IS_DIABETE, tIsole.IS_MA_ALLERGICHE], 'Rows','complete');
@@ -862,7 +823,7 @@ figure
 autocorr(IS_res)
 xlabel('Lag');
 ylabel('Autocorrelazione dei Residui');
-title("Autocorrelazione");
+title("Autocorrelazione Isole");
 
 % 4. Ricerca degli outliers
 IS_residui_stud = IS_lm2.Residuals.Studentized;
@@ -872,10 +833,12 @@ xlabel("Fitted data")
 ylabel("Residui studentizzati")
 yline(3, '--b')
 yline(-3, '--b')
+title('Residui studentizzati vs Fitted data Isole')
 
 % 5. Varianza dei residui
 figure
 plotResiduals(IS_lm2, 'fitted', 'Marker','o')
+title('Residuals vs Fitted data Isole')
 
 % 6. DW Test per autocorrelazione residui
 [p,DW] = dwtest(IS_lm1,'exact','both')
@@ -891,4 +854,4 @@ end
 % 8. t Test media residui (H0 : media=0):
 [h,p,ci,stats] = ttest(IS_res)
 
-close all
+%close all
