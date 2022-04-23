@@ -7,6 +7,7 @@
 % 1. Mskekur (Mardia test)
 % 2. TestHet (heteroskedasticity)
 % 3. Statistics and Machine Learning Toolbox
+% 4. Econometrics Toolbox (for 'autocorr')
 
 addpath("Mskekur\")
 addpath("tHet.m\")

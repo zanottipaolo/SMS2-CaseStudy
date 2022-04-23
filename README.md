@@ -7,6 +7,8 @@ Check out our work! :point_down: <br>
 ## Dependencies on Matlab
 1. [Mskekur (Mardia test)](https://github.com/zanottipaolo/SMS2-CaseStudy/blob/main/Mskekur.m)
 2. [TestHet (heteroskedasticity)](https://github.com/zanottipaolo/SMS2-CaseStudy/blob/main/TestHet.m)
+3. [Statistics and Machine Learning Toolbox]
+4. [Econometrics Toolbox]
 
 ## Part 1
 - [x] Mardia test
