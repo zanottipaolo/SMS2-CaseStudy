@@ -764,11 +764,6 @@ IS_res = IS_lm2.Residuals.Raw;
 figure
 plot(IS_lm2);
 
-% Massima verosomiglianza
-figure
-histogram(IS_res)
-mle(tIsole.IS_DIABETE, 'distribution','Normal', 'Alpha', .01)
-
 % JB Test residui Isole
 x5=IS_res;
 figure
