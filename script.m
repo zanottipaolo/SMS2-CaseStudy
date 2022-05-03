@@ -310,6 +310,44 @@ else
     disp("rifiuto l'ipotesi nulla, gli errori sono eteroschedastici")
 end
 
+% IC beta con bootstrap semi-parametrico (distribuzione errori ignota)
+mboot=10000;
+beta_boot_NO=nan(mboot,4);
+for i=1:mboot
+    idx=unidrnd(25,25,1);
+    res=NO_res(idx);
+    y_boot=x3NO*b3NO+res;
+    beta_boot_NO(i,:)=regress(y_boot,x3NO);
+end
+% distribuzioni beta_boot_NO
+figure
+subplot(2,2,1)
+histfit(beta_boot_NO(:,1));
+title('distribuzione intercetta NO');
+subplot(2,2,2)
+histfit(beta_boot_NO(:,2));
+title('distribuzione beta eccesso peso NO');
+subplot(2,2,3)
+histfit(beta_boot_NO(:,3));
+title('distribuzione beta diabete NO');
+subplot(2,2,4)
+histfit(beta_boot_NO(:,4));
+title('distribuzione beta malattie allergiche NO');
+%media beta bootstrap
+beta_boot_NO_mean=mean(beta_boot_NO);
+%varianza beta bootstrap
+beta_boot_NO_var=var(beta_boot_NO);
+%IC 95% beta bootstrap NO
+IC_NO=quantile(beta_boot_NO,[0.025 0.975]);
+disp('intercetta NO + IC 95% Bootstrap');
+disp([IC_NO(1,1) beta_boot_NO_mean(1) IC_NO(2,1)]);
+disp('beta eccesso peso NO + IC 95% Bootstrap');
+disp([IC_NO(1,2) beta_boot_NO_mean(2) IC_NO(2,2)]);
+disp('beta diabete NO + IC 95% Bootstrap');
+disp([IC_NO(1,3) beta_boot_NO_mean(3) IC_NO(2,3)]);
+disp('beta malattie allergiche NO + IC 95% Bootstrap');
+disp([IC_NO(1,4) beta_boot_NO_mean(4) IC_NO(2,4)]);
+
 %% OLS per NORDEST
 %%CROSS VALIDAZIONE NE
 % creazione regressori
@@ -449,6 +487,44 @@ if pval>0.05
 else
     disp("rifiuto l'ipotesi nulla, gli errori sono eteroschedastici")
 end
+
+% IC beta con bootstrap semi-parametrico (distribuzione errori ignota)
+mboot=10000;
+beta_boot_NE=nan(mboot,4);
+for i=1:mboot
+    idx=unidrnd(25,25,1);
+    res=NE_res(idx);
+    y_boot=x3NE*b3NE+res;
+    beta_boot_NE(i,:)=regress(y_boot,x3NE);
+end
+% distribuzioni beta_boot_NE
+figure
+subplot(2,2,1)
+histfit(beta_boot_NE(:,1));
+title('distribuzione intercetta NE');
+subplot(2,2,2)
+histfit(beta_boot_NE(:,2));
+title('distribuzione beta eccesso peso NE');
+subplot(2,2,3)
+histfit(beta_boot_NE(:,3));
+title('distribuzione beta diabete NE');
+subplot(2,2,4)
+histfit(beta_boot_NE(:,4));
+title('distribuzione beta malattie allergiche NE');
+%media beta bootstrap
+beta_boot_NE_mean=mean(beta_boot_NE);
+%varianza beta bootstrap
+beta_boot_NE_var=var(beta_boot_NE);
+%IC 95% beta bootstrap NE
+IC_NE=quantile(beta_boot_NE,[0.025 0.975]);
+disp('intercetta NE + IC 95% Bootstrap');
+disp([IC_NE(1,1) beta_boot_NE_mean(1) IC_NE(2,1)]);
+disp('beta eccesso peso NE + IC 95% Bootstrap');
+disp([IC_NE(1,2) beta_boot_NE_mean(2) IC_NE(2,2)]);
+disp('beta diabete NE + IC 95% Bootstrap');
+disp([IC_NE(1,3) beta_boot_NE_mean(3) IC_NE(2,3)]);
+disp('beta malattie allergiche NE + IC 95% Bootstrap');
+disp([IC_NE(1,4) beta_boot_NE_mean(4) IC_NE(2,4)]);
 
 %% OLS per CENTRO %%
 %%CROSS VALIDAZIONE Centro
@@ -590,6 +666,44 @@ else
     disp("rifiuto l'ipotesi nulla, gli errori sono eteroschedastici")
 end
 
+% IC beta con bootstrap semi-parametrico (distribuzione errori ignota)
+mboot=10000;
+beta_boot_CE=nan(mboot,4);
+for i=1:mboot
+    idx=unidrnd(25,25,1);
+    res=CE_res(idx);
+    y_boot=x3CE*b3CE+res;
+    beta_boot_CE(i,:)=regress(y_boot,x3CE);
+end
+% distribuzioni beta_boot_NO
+figure
+subplot(2,2,1)
+histfit(beta_boot_CE(:,1));
+title('distribuzione intercetta CE');
+subplot(2,2,2)
+histfit(beta_boot_CE(:,2));
+title('distribuzione beta eccesso peso CE');
+subplot(2,2,3)
+histfit(beta_boot_CE(:,3));
+title('distribuzione beta diabete CE');
+subplot(2,2,4)
+histfit(beta_boot_CE(:,4));
+title('distribuzione beta malattie allergiche CE');
+%media beta bootstrap
+beta_boot_CE_mean=mean(beta_boot_CE);
+%varianza beta bootstrap
+beta_boot_CE_var=var(beta_boot_CE);
+%IC 95% beta bootstrap CE
+IC_CE=quantile(beta_boot_CE,[0.025 0.975]);
+disp('intercetta CE + IC 95% Bootstrap');
+disp([IC_CE(1,1) beta_boot_CE_mean(1) IC_CE(2,1)]);
+disp('beta eccesso peso CE + IC 95% Bootstrap');
+disp([IC_CE(1,2) beta_boot_CE_mean(2) IC_CE(2,2)]);
+disp('beta diabete CE + IC 95% Bootstrap');
+disp([IC_CE(1,3) beta_boot_CE_mean(3) IC_CE(2,3)]);
+disp('beta malattie allergiche CE + IC 95% Bootstrap');
+disp([IC_CE(1,4) beta_boot_CE_mean(4) IC_CE(2,4)]);
+
 %% OLS per SUD %%
 %%CROSS VALIDAZIONE SUD
 % creazione regressori
@@ -730,6 +844,44 @@ else
     disp("rifiuto l'ipotesi nulla, gli errori sono eteroschedastici")
 end
 
+% IC beta con bootstrap semi-parametrico (distribuzione errori ignota)
+mboot=10000;
+beta_boot_SU=nan(mboot,4);
+for i=1:mboot
+    idx=unidrnd(25,25,1);
+    res=SU_res(idx);
+    y_boot=x3SU*b3SU+res;
+    beta_boot_SU(i,:)=regress(y_boot,x3SU);
+end
+% distribuzioni beta_boot_SU
+figure
+subplot(2,2,1)
+histfit(beta_boot_SU(:,1));
+title('distribuzione intercetta SU');
+subplot(2,2,2)
+histfit(beta_boot_SU(:,2));
+title('distribuzione beta eccesso peso SU');
+subplot(2,2,3)
+histfit(beta_boot_SU(:,3));
+title('distribuzione beta diabete SU');
+subplot(2,2,4)
+histfit(beta_boot_SU(:,4));
+title('distribuzione beta malattie allergiche SU');
+%media beta bootstrap
+beta_boot_SU_mean=mean(beta_boot_SU);
+%varianza beta bootstrap
+beta_boot_SU_var=var(beta_boot_SU);
+%IC 95% beta bootstrap SU
+IC_SU=quantile(beta_boot_SU,[0.025 0.975]);
+disp('intercetta SU + IC 95% Bootstrap');
+disp([IC_SU(1,1) beta_boot_SU_mean(1) IC_SU(2,1)]);
+disp('beta eccesso peso SU + IC 95% Bootstrap');
+disp([IC_SU(1,2) beta_boot_SU_mean(2) IC_SU(2,2)]);
+disp('beta diabete SU + IC 95% Bootstrap');
+disp([IC_SU(1,3) beta_boot_SU_mean(3) IC_SU(2,3)]);
+disp('beta malattie allergiche SU + IC 95% Bootstrap');
+disp([IC_SU(1,4) beta_boot_SU_mean(4) IC_SU(2,4)]);
+
 %% OLS per ISOLE %%
 %%CROSS VALIDAZIONE ISOLE
 % creazione regressori
@@ -869,5 +1021,38 @@ if pval>0.05
 else
     disp("rifiuto l'ipotesi nulla, gli errori sono eteroschedastici")
 end
+
+% IC beta con bootstrap semi-parametrico (distribuzione errori ignota)
+mboot=10000;
+beta_boot_IS=nan(mboot,3);
+for i=1:mboot
+    idx=unidrnd(25,25,1);
+    res=IS_res(idx);
+    y_boot=x2IS*b2IS+res;
+    beta_boot_IS(i,:)=regress(y_boot,x2IS);
+end
+% distribuzioni beta_boot_IS
+figure
+subplot(2,2,1)
+histfit(beta_boot_IS(:,1));
+title('distribuzione intercetta IS');
+subplot(2,2,2)
+histfit(beta_boot_IS(:,2));
+title('distribuzione beta diabete IS');
+subplot(2,2,3)
+histfit(beta_boot_IS(:,3));
+title('distribuzione beta malattie allergiche IS');
+%media beta bootstrap
+beta_boot_IS_mean=mean(beta_boot_IS);
+%varianza beta bootstrap
+beta_boot_IS_var=var(beta_boot_IS);
+%IC 95% beta bootstrap IS
+IC_IS=quantile(beta_boot_IS,[0.025 0.975]);
+disp('intercetta IS + IC 95% Bootstrap');
+disp([IC_IS(1,1) beta_boot_IS_mean(1) IC_IS(2,1)]);
+disp('beta diabete IS + IC 95% Bootstrap');
+disp([IC_IS(1,2) beta_boot_IS_mean(2) IC_IS(2,2)]);
+disp('beta malattie allergiche IS + IC 95% Bootstrap');
+disp([IC_IS(1,3) beta_boot_IS_mean(3) IC_IS(2,3)]);
 
 % close all
