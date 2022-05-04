@@ -169,6 +169,7 @@ title("Casi di Malattie respiratorie croniche in Italia 1990 - 2014")
 legend("Nord Ovest", "Nord Est", "Centro", "Sud", "Isole")
 %% ------------------------------- %%
 
+close all
 
 %% OLS per NORDOVEST %%
 %%CROSS VALIDAZIONE Nord Ovest
