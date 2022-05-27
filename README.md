@@ -21,8 +21,9 @@ Check out our work! :point_down: <br>
 
 ## Part 2
 - [ ] Monte Carlo method
-- [ ] Bootstrap
-- [ ] ...
+- [x] Bootstrap
+- [x] Regressione Dinamica
+- [x] RegArima
 
 Made by:
 - [Federico De Duro](https://github.com/Jfkmdd)
