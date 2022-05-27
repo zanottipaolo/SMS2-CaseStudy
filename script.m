@@ -908,7 +908,7 @@ mse3_IS = crossval('mse',x3IS,YIS,'Predfun',regf, 'kfold', 5,'MCReps',1000);
 mse4_IS = crossval('mse',x4IS,YIS,'Predfun',regf, 'kfold', 5,'MCReps',1000);
 mse5_IS = crossval('mse',x5IS,YIS,'Predfun',regf, 'kfold', 5,'MCReps',1000);
 Vettore_mse_IS = [mse1_IS mse2_IS mse3_IS mse4_IS mse5_IS];
-    
+
 hold on
 plot(n_regressori, Vettore_mse_IS)
 
@@ -1057,3 +1057,97 @@ disp('beta malattie allergiche IS + IC 95% Bootstrap');
 disp([IC_IS(1,3) beta_boot_IS_mean(3) IC_IS(2,3)]);
 
 % close all
+
+
+%% Regressione dinamica senza log
+params = [1 1 1 1];
+x_regDin = [tNordOvest.NO_DIABETE tNordOvest.NO_MA_ALLERGICHE tNordOvest.NO_ECCESSO_PESO];
+x_regDin = (x_regDin);
+y = (tNordOvest.NO_IPERTENSIONE);
+funzioneMap = @(params) map(params, x_regDin, NO_lm1.Coefficients.Estimate(1), NO_lm1.Coefficients.Estimate(2), NO_lm1.Coefficients.Estimate(3), NO_lm1.Coefficients.Estimate(4));
+modelNO = ssm(funzioneMap)
+estModel = estimate(modelNO, y, params)
+
+obs_err = (cell2mat(estModel.D).^2)
+sta_err = ((estModel.B).^2)
+
+filterMdl = filter(estModel,y);
+alpha_flt = filterMdl(:,1);
+beta_flt = filterMdl(:,2:4);
+
+smoothMdl = smooth(estModel,y);
+alpha_smo = smoothMdl(:,1);
+
+beta_smo1 = smoothMdl(:,2);
+beta_smo2 = smoothMdl(:,3);
+beta_smo3 = smoothMdl(:,4);
+
+y3_smo = alpha_smo + (beta_smo1.*x_regDin(:,1)) + (beta_smo2.*x_regDin(:,2)) + (beta_smo3.*x_regDin(:,3));
+res = y - y3_smo;
+mean(res)
+
+% Previsione un passo in avanti
+alpha_flt_forecast = [nan; alpha_flt(1:end-1)];
+beta_flt_forecast = [nan nan nan; beta_flt(1:end-1,:)];
+
+beta_flt_forecast1 = beta_flt_forecast(:,1);
+beta_flt_forecast2 = beta_flt_forecast(:,2);
+beta_flt_forecast3 = beta_flt_forecast(:,3);
+
+y3_frc = alpha_flt_forecast + beta_flt_forecast1.*x_regDin(:,1) + beta_flt_forecast2.*x_regDin(:,2) + beta_flt_forecast3.*x_regDin(:,3);
+e3_frc = y - y3_frc;
+nanmean(e3_frc)
+
+plot(y3_frc)
+hold on
+plot(y)
+hold off
+
+%% Regressione dinamica con log
+params = [1 1 1 1];
+x_regDin = [tNordOvest.NO_DIABETE tNordOvest.NO_MA_ALLERGICHE tNordOvest.NO_ECCESSO_PESO];
+x_regDin = log(x_regDin);
+y = log(tNordOvest.NO_IPERTENSIONE);
+funzioneMap = @(params) map(params, x_regDin, NO_lm1.Coefficients.Estimate(1), NO_lm1.Coefficients.Estimate(2), NO_lm1.Coefficients.Estimate(3), NO_lm1.Coefficients.Estimate(4));
+modelNO = ssm(funzioneMap)
+estModel = estimate(modelNO, y, params)
+
+obs_err = (cell2mat(estModel.D).^2)
+sta_err = ((estModel.B).^2)
+
+filterMdl = filter(estModel,y);
+alpha_flt = filterMdl(:,1);
+beta_flt = filterMdl(:,2:4);
+
+smoothMdl = smooth(estModel,y);
+alpha_smo = smoothMdl(:,1);
+
+beta_smo1 = smoothMdl(:,2);
+beta_smo2 = smoothMdl(:,3);
+beta_smo3 = smoothMdl(:,4);
+
+y3_smo = alpha_smo + (beta_smo1.*x_regDin(:,1)) + (beta_smo2.*x_regDin(:,2)) + (beta_smo3.*x_regDin(:,3));
+res = y - y3_smo;
+mean(res)
+
+% Previsione un passo in avanti
+alpha_flt_forecast = [nan; alpha_flt(1:end-1)];
+beta_flt_forecast = [nan nan nan; beta_flt(1:end-1,:)];
+
+beta_flt_forecast1 = beta_flt_forecast(:,1);
+beta_flt_forecast2 = beta_flt_forecast(:,2);
+beta_flt_forecast3 = beta_flt_forecast(:,3);
+
+y3_frc = alpha_flt_forecast + beta_flt_forecast1.*x_regDin(:,1) + beta_flt_forecast2.*x_regDin(:,2) + beta_flt_forecast3.*x_regDin(:,3);
+e3_frc = y - y3_frc;
+nanmean(e3_frc)
+
+plot(y3_frc)
+hold on
+plot(y)
+
+figure
+hold on
+plot(y)
+plot(y3_smo)
+hold off
