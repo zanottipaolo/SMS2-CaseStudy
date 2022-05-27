@@ -1151,3 +1151,115 @@ hold on
 plot(y)
 plot(y3_smo)
 hold off
+
+params = [1 1 1 1];
+x_regDin = [tNordOvest.NO_DIABETE(1:end-4,:) tNordOvest.NO_MA_ALLERGICHE(1:end-4,:) tNordOvest.NO_ECCESSO_PESO(1:end-4,:)];
+x_regDin = log(x_regDin);
+y = log(tNordOvest.NO_IPERTENSIONE(1:end-4));
+funzioneMap = @(params) map(params, x_regDin, NO_lm1.Coefficients.Estimate(1), NO_lm1.Coefficients.Estimate(2), NO_lm1.Coefficients.Estimate(3), NO_lm1.Coefficients.Estimate(4));
+modelNO = ssm(funzioneMap)
+estModel = estimate(modelNO, y, params)
+
+[yFregDin, yMSEregDin] = forecast(estModel, 5, y);
+plot(yFregDin)
+hold on
+plot(log(tNordOvest.NO_IPERTENSIONE(end-4:end)))
+
+
+x_last5 = log([tNordOvest.NO_DIABETE(end-4:end,:) tNordOvest.NO_MA_ALLERGICHE(end-4:end,:) tNordOvest.NO_ECCESSO_PESO(end-4:end,:)]);
+
+%% RegArima
+Mdl1 = regARIMA(1,0,0); % Errore AR(1)
+x_regArima = [tNordOvest.NO_DIABETE(1:end-4,:) tNordOvest.NO_MA_ALLERGICHE(1:end-4,:) tNordOvest.NO_ECCESSO_PESO(1:end-4,:)];
+
+x_regArima_log = log(x_regArima); % logarithmo per stabilizzare la varianza
+y_regArima_log = log(tNordOvest.NO_IPERTENSIONE(1:end-4,:));
+
+EstMdl1 = estimate(Mdl1, y_regArima_log,'X', x_regArima_log,'Display','params');
+res_regArima = infer(EstMdl1, y_regArima_log, 'X', x_regArima_log);
+
+mean_res_regArima = mean(res_regArima)
+kpsstest(res_regArima)
+
+figure
+subplot(2,2,1)
+plot(res)
+title('Standardized Residuals')
+subplot(2,2,2)
+histfit(res)
+title('Standardized Residuals')
+subplot(2,2,3)
+autocorr(res)
+subplot(2,2,4)
+parcorr(res)
+
+[yF1, yMSE1] = forecast(EstMdl1, 5, 'Y0', y_regArima_log, 'X0', x_regArima_log, 'XF', x_last5);
+SUM_MSE_REGARIMA_1 = sum(yMSE1);
+
+
+plot(log(tNordOvest.NO_IPERTENSIONE(end-4:end)))
+hold on
+plot(yF1)
+
+%% ARMA
+Mdl2 = regARIMA(1,0,1);
+
+EstMdl2 = estimate(Mdl2, y_regArima_log,'X', x_regArima_log,'Display','params');
+res_regArima = infer(EstMdl2, y_regArima_log, 'X', x_regArima_log);
+
+mean_res_regArima_2 = mean(res_regArima)
+kpsstest(res_regArima)
+
+figure
+subplot(2,2,1)
+plot(res)
+title('Standardized Residuals')
+subplot(2,2,2)
+histfit(res)
+title('Standardized Residuals')
+subplot(2,2,3)
+autocorr(res)
+subplot(2,2,4)
+parcorr(res)
+
+[yF2, yMSE2] = forecast(EstMdl2, 5, 'Y0', y_regArima_log, 'X0', x_regArima_log, 'XF', x_last5);
+SUM_MSE_ARMA_2 = sum(yMSE2);
+
+plot(log(tNordOvest.NO_IPERTENSIONE(end-4:end)))
+hold on
+plot(yF2)
+
+%% ARMA 2,0,0
+Mdl2 = regARIMA(2,0,0);
+
+EstMdl2 = estimate(Mdl2, y_regArima_log,'X', x_regArima_log,'Display','params');
+res_regArima = infer(EstMdl2, y_regArima_log, 'X', x_regArima_log);
+
+mean_res_regArima_2 = mean(res_regArima)
+kpsstest(res_regArima)
+
+figure
+subplot(2,2,1)
+plot(res)
+title('Standardized Residuals')
+subplot(2,2,2)
+histfit(res)
+title('Standardized Residuals')
+subplot(2,2,3)
+autocorr(res)
+subplot(2,2,4)
+parcorr(res)
+
+[yF2, yMSE2] = forecast(EstMdl2, 5, 'Y0', y_regArima_log, 'X0', x_regArima_log, 'XF', x_last5);
+SUM_MSE_ARMA_2 = sum(yMSE2);
+AIC = summarize(EstMdl2)
+AIC.AIC
+
+plot(log(tNordOvest.NO_IPERTENSIONE(end-4:end)))
+hold on
+plot(yF2)
+
+%% AR(1)
+Mdl3 = regARIMA('ARLags', 1);
+[yF3, yMSE3] = forecast(EstMdl3, 5, 'Y0', y_AR_log, 'X0', x_AR_log, 'XF', x_last5);
+SUM_MSE_AR = sum(yMSE3);
