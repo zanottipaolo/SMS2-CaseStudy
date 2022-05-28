@@ -1263,3 +1263,57 @@ plot(yF2)
 Mdl3 = regARIMA('ARLags', 1);
 [yF3, yMSE3] = forecast(EstMdl3, 5, 'Y0', y_AR_log, 'X0', x_AR_log, 'XF', x_last5);
 SUM_MSE_AR = sum(yMSE3);
+
+
+
+
+%% Ciclo per determinare BIC, q e p
+x_log = log([tNordOvest.NO_DIABETE(1:end-4,:) tNordOvest.NO_MA_ALLERGICHE(1:end-4,:) tNordOvest.NO_ECCESSO_PESO(1:end-4,:)]);
+y_log = log(tNordOvest.NO_IPERTENSIONE(1:end-4,:));
+x_last5 = log([tNordOvest.NO_DIABETE(end-4:end,:) tNordOvest.NO_MA_ALLERGICHE(end-4:end,:) tNordOvest.NO_ECCESSO_PESO(end-4:end,:)]);
+
+q_vector = [0 1 2 3 4];
+p_vector = [0 1 2 3 4];
+Matrix_result = zeros(5,5);
+
+format longg
+
+for p = 0:4
+    for q = 0:4
+        model = regARIMA(p,0,q);
+        try
+            estimate_model = estimate(model, y_log,'X', x_log,'Display','params');
+            res = infer(estimate_model, y_log, 'X', x_log);
+
+            aic = summarize(estimate_model);
+            Matrix_result(p+1, q+1) = aic.AIC;
+        catch
+            % Processo non stazionario
+            Matrix_result(p+1, q+1) = NaN;
+        end  
+    end
+end
+
+plot(p_vector, Matrix_result)
+legend({'q = 0','q = 1','q = 2','q = 3','q = 4'})
+title('Plot AIC rispetto a (p,q)')
+xlabel("p");
+ylabel("AIC");
+
+% Il migliore sembra essere quello con p = 4, q = 1
+model = regARIMA(4,0,1);
+estimate_model = estimate(model, y_log,'X', x_log,'Display','params');
+res = infer(estimate_model, y_log, 'X', x_log);
+
+[yF, yMSE] = forecast(estimate_model, 5, 'Y0', y_log, 'X0', x_log, 'XF', x_last5);
+SUM_MSE = sum(yMSE);
+
+plot(log(tNordOvest.NO_IPERTENSIONE(end-4:end)))
+hold on
+plot(yF)
+
+
+histfit(res)
+
+
+
