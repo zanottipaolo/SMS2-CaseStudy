@@ -1275,7 +1275,7 @@ x_last5 = log([tNordOvest.NO_DIABETE(end-4:end,:) tNordOvest.NO_MA_ALLERGICHE(en
 q_vector = [0 1 2 3 4];
 p_vector = [0 1 2 3 4];
 Matrix_result = zeros(5,5);
-
+Matrix_MSE = zeros(5,5);
 format longg
 
 for p = 0:4
@@ -1285,15 +1285,29 @@ for p = 0:4
             estimate_model = estimate(model, y_log,'X', x_log,'Display','params');
             res = infer(estimate_model, y_log, 'X', x_log);
 
+            [yF, yMSE] = forecast(estimate_model, 5, 'Y0', y_log, 'X0', x_log, 'XF', x_last5);
+
             aic = summarize(estimate_model);
             Matrix_result(p+1, q+1) = aic.AIC;
+            Matrix_MSE(p+1, q+1) = sum(yMSE);
         catch
             % Processo non stazionario
             Matrix_result(p+1, q+1) = NaN;
+            Matrix_MSE(p+1, q+1) = NaN;
         end  
     end
 end
 
+% Plot MSE e AIC dei modelli trovati
+figure
+subplot(2,1,1);
+plot(p_vector, Matrix_MSE)
+title('Plot MSE')
+legend({'q = 0','q = 1','q = 2','q = 3','q = 4'})
+xlabel("p");
+ylabel("MSE");
+
+subplot(2,1,2)
 plot(p_vector, Matrix_result)
 legend({'q = 0','q = 1','q = 2','q = 3','q = 4'})
 title('Plot AIC rispetto a (p,q)')
@@ -1311,7 +1325,6 @@ SUM_MSE = sum(yMSE);
 plot(log(tNordOvest.NO_IPERTENSIONE(end-4:end)))
 hold on
 plot(yF)
-
 
 histfit(res)
 
