@@ -552,9 +552,13 @@ mse = mean((tNordOvest.NO_IPERTENSIONE(end-4:end)-yF).^2)
 
 figure
 hold on
-plot(yF)
-plot(tNordOvest.NO_IPERTENSIONE(end-4:end))
-legend('previsione','osservazione')
+plot(T.ANNO(end-4:end), yF)
+plot(T.ANNO(end-4:end), tNordOvest.NO_IPERTENSIONE(end-4:end))
+legend('Previsione','Osservazione')
+title("Confronto Previsione - Osservazione")
+xlabel("Anno [Year]",'FontSize', 16)
+ylabel("Casi di ipertensione [%]", 'FontSize', 16)
+grid()
 hold off
 
 mean_res = mean(res)
