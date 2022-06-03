@@ -492,7 +492,7 @@ plot(tNordOvest.NO_IPERTENSIONE(end-4:end),'r')
 legend({'previsione','IC 95% lb','IC 95% ub','osservazione'})
 hold off
 
-%% RegArima
+%% RegArima - Tolto il regressore Eccesso peso perché non significativo
 %Ciclo per determinare BIC, q e p
 x = [tNordOvest.NO_DIABETE(1:end-5,:) tNordOvest.NO_MA_ALLERGICHE(1:end-5,:)];
 y = tNordOvest.NO_IPERTENSIONE(1:end-5,:);
@@ -501,6 +501,7 @@ x_last5 = [tNordOvest.NO_DIABETE(end-4:end,:) tNordOvest.NO_MA_ALLERGICHE(end-4:
 q_vector = [0 1 2 3 4];
 p_vector = [0 1 2 3 4];
 Matrix_result = NaN(5,5);
+Matrix_result2 = NaN(5,5);
 
 format longg
 
@@ -519,7 +520,7 @@ for p = 0:4
         catch
             % Processo non stazionario
             Matrix_result(p+1, q+1) = NaN;
-             Matrix_result2(p+1, q+1) = NaN;
+            Matrix_result2(p+1, q+1) = NaN;
         end  
     end
 end
@@ -528,16 +529,18 @@ figure
 subplot(2,1,1)
 plot(p_vector, Matrix_result)
 legend({'q = 0','q = 1','q = 2','q = 3','q = 4'})
-title('Plot BIC rispetto a (p,q)')
-xlabel("p");
-ylabel("BIC");
+title('Andamento BIC rispetto a (p,q)', 'FontSize', 16)
+xlabel("p", 'FontSize', 16);
+ylabel("BIC", 'FontSize', 16);
+grid
 hold on
 subplot(2,1,2)
 plot(p_vector, Matrix_result2)
 legend({'q = 0','q = 1','q = 2','q = 3','q = 4'})
-title('Plot MSE rispetto a (p,q)')
-xlabel("p");
-ylabel("MSE");
+title('Andamento MSE rispetto a (p,q)', 'FontSize', 16)
+xlabel("p", 'FontSize', 16);
+ylabel("MSE", 'FontSize', 16);
+grid
 hold off
 
 % ARMA(0,0,1) modello con migliore rapporto BIC e MSE e con coeff.
@@ -545,6 +548,7 @@ hold off
 model = regARIMA(0,0,1);
 estimate_model = estimate(model, y,'X', x,'Display','params');
 res = infer(estimate_model, y, 'X', x);
+estimate_y = res + y;
 
 [yF,eVar]= forecast(estimate_model, 5, 'Y0', y, 'X0', x, 'XF', x_last5)
 err = immse(yF,tNordOvest.NO_IPERTENSIONE(end-4:end))
@@ -575,6 +579,83 @@ subplot(2,2,3)
 autocorr(res)
 subplot(2,2,4)
 parcorr(res)
+
+% Analisi dei residui
+% Ricerca degli outliers
+dist = (1 / 19) .* ((x - mean(x).^2) / var(x));
+estimate_std = sqrt(var(res)) * sqrt(1 - ((1 / 20) + dist));
+residui_studentizzati = res ./ estimate_std;
+
+figure
+subplot(2,2,1)
+    qqplot(res)
+    title('Distribuzione Quantili teorici - Quantili residui standardizzati Nord Ovest');
+subplot(2,2,2)
+    [S,AX,BigAx,H,HAx] = plotmatrix([tNordOvest.NO_DIABETE(1:end-5,:) tNordOvest.NO_MA_ALLERGICHE(1:end-5,:)], res)
+    title 'Correlazione Residui-Regressori';
+    AX(1,1).YLabel.String = 'Residui';
+    AX(1,1).XLabel.String = 'DIABETE';
+    AX(1,2).XLabel.String = 'MALATTIE ALLERGICHE';
+    title('Correlazione Residui-Regressori Nord Ovest')
+subplot(2,2,3)
+    scatter(estimate_y, res, 'filled')
+    title('Residuals vs Fitted data Nord Ovest')
+subplot(2,2,4)
+    scatter(estimate_y, residui_studentizzati)
+    xlabel("Fitted data");
+    ylabel("Residui studentizzati");
+    yline(3, '--b');
+    yline(-3, '--b');
+    title('Residui studentizzati vs Fitted data Nord Ovest');
+
+% Omoschedasticità
+pval = TestHet(res,[tNordOvest.NO_DIABETE(1:end-5,:), tNordOvest.NO_MA_ALLERGICHE(1:end-5,:)], '-BPK')
+if pval>0.05
+    disp("accetto l'ipotesi nulla, gli errori sono omoschedastici")
+else
+    disp("rifiuto l'ipotesi nulla, gli errori sono eteroschedastici")
+end
+
+% Verifica dell'incorrelazione tramite gli indici di correlazione
+NO_mat_corr_residui = corrcoef([res, tNordOvest.NO_DIABETE(1:end-5,:), tNordOvest.NO_MA_ALLERGICHE(1:end-5,:)], 'Rows','complete');
+NO_res_corr_w_reg = NO_mat_corr_residui(2:end, 1) % Vettore di rho residui - regressori
+
+% T-test media = 0
+[h, pval] = ttest(res)
+
+% Jb Test
+x2 = res;
+n = length(x2);
+JBdata = (skewness(x2).^2)*n/6+((kurtosis(x2)-3).^2)*n/24;
+
+% Simulazione MC
+m = 1000;
+X0 = randn(m,n);
+JB0 = (skewness(X0').^2)*n/6+((kurtosis(X0')-3).^2)*n/24;
+alpha = 0.05;
+JBcrit = prctile(JB0,100*(1-alpha));
+disp(['JBcrit_NE: ',num2str(JBcrit)]);
+pval = mean(JB0>JBdata);
+stdp = sqrt(pval*(1-pval)/m);
+disp(['pvalue_NE: ',num2str(pval)]);
+disp(['dev std pvalue_NE: ',num2str(stdp)]);
+X1 = chi2rnd(2,m,n);
+JB1 = (skewness(X1').^2)*n/6+((kurtosis(X1')-3).^2)*n/24;
+potenza = mean(JB1>JBcrit);
+disp(['potenza test_NE: ',num2str(potenza)]);
+% Accetto ipotesi nulla, res normali
+
+% Bootstrap parametrico sui parametri regArima
+n = length(res);
+sigma_stimata_errori = sum(res.^2) / (n - 3)
+var(res)
+
+
+
+
+
+
+
 
 %% OLS per NORDEST
 %%CROSS VALIDAZIONE NE

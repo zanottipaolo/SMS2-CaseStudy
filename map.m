@@ -5,7 +5,7 @@ function[A, B, C ,D] = map(paramsInit, x, alpha0, beta0, beta1, beta2)
     n = length(x);
 
     Mean0 = [alpha0; beta0; beta1; beta2];
-    Cov0 = eye(2);
+    Cov0 = eye(4);
     
     StateType = [];
     
