@@ -6,7 +6,7 @@ x = [tNordEst.NE_DIABETE(1:end-5,:) tNordEst.NE_MA_ALLERGICHE(1:end-5,:) tNordEs
 y = tNordEst.NE_IPERTENSIONE(1:end-5,:);
 x_last5 = [tNordEst.NE_DIABETE(end-4:end,:) tNordEst.NE_MA_ALLERGICHE(end-4:end,:) tNordEst.NE_ECCESSO_PESO(end-4:end,:)];
 
-lm_NE = fitlm(x,y)
+lm_NE = fitlm(x,y);
 [ypred, yci] = predict(lm_NE, x_last5, 'alpha', 0.05, 'Prediction', 'observation', 'Simultaneous','on');
 err = immse(ypred, tNordEst.NE_IPERTENSIONE(end-4:end));
 mse = mean((tNordEst.NE_IPERTENSIONE(end-4:end)-ypred).^2)
