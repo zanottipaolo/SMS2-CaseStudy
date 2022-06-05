@@ -270,7 +270,7 @@ ylabel("MSE", 'FontSize', 16);
 grid
 hold off
 
-% ARMA(1,0,0) modello con migliore rapporto BIC e MSE, con coefficienti
+% ARIMA(1,0,0) modello con migliore rapporto BIC e MSE, con coefficienti
 % significativi, stazionario e invertibile 
 model = regARIMA(1,0,0);
 estimate_model = estimate(model, y,'X', x,'Display','params');
