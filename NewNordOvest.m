@@ -327,7 +327,7 @@ disp([IC_NO(1,3) par_sim_NO_mean(3) IC_NO(2,3)]);
 disp('coeff. AR NO + IC 95% Bootstrap');
 disp([IC_NO(1,4) par_sim_NO_mean(4) IC_NO(2,4)]);
 
-% forecast regArima e bootstrap parametrico per IC di previsione
+% forecast regArima
 [yF,eVar] = forecast(estimate_model, 5, 'Y0', y, 'X0', x, 'XF', x_last5);
 err = immse(yF,tNordOvest.NO_IPERTENSIONE(end-4:end))
 mse = mean((tNordOvest.NO_IPERTENSIONE(end-4:end)-yF).^2);
