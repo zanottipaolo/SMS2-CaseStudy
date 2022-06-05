@@ -280,7 +280,7 @@ estimate_y = res + y;
 % Bootstrap parametrico IC coefficienti regArima (errori normali)
 n=length(y);
 sigma_hat=sqrt(sum(res.^2)/16);
-m=100;
+m=50;
 err_sim=normrnd(0,sigma_hat,n,m,1);
 y_sim=nan(n,m);
 for k=1:m
