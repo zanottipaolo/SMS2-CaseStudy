@@ -285,8 +285,8 @@ hold off
 
 % ARMA(0,0,1) modello con migliore rapporto BIC e MSE e con coeff.
 % significativi
-model = regARIMA(4,0,2);
-x = [tNordEst.NE_MA_ALLERGICHE(1:end-5,:) tNordEst.NE_ECCESSO_PESO(1:end-5,:)];
+model = regARIMA(2,0,0);
+x = [tNordEst.NE_MA_ALLERGICHE(1:end-5,:) tNordEst.NE_DIABETE(1:end-5,:)];
 y = tNordEst.NE_IPERTENSIONE(1:end-5,:);
 estimate_model = estimate(model, y,'X', x,'Display','params');
 res = infer(estimate_model, y, 'X', x);
@@ -322,6 +322,82 @@ figure
   subplot(2,2,4)
     parcorr(res,'Method','yule-walker')
 
+% Bootstrap parametrico IC coefficienti regArima (errori normali)
+n = length(y);
+sigma_hat = sqrt(sum(res.^2)/16);
+m = 50;
+err_sim = normrnd(0,sigma_hat,n,m,1);
+y_sim = nan(n,m);
+for k = 1:m
+    err = err_sim(:,k);
+    for i=2:20
+        y_sim(1,k) = estimate_model.Intercept + estimate_model.Beta(1)*x(1,1) + estimate_model.Beta(2)*x(1,2) + err(1);
+        y_sim(i,k) = estimate_model.Intercept + estimate_model.Beta(1)*x(i,1) + estimate_model.Beta(2)*x(i,2) + cell2mat(estimate_model.AR(1))*err(i-1) + cell2mat(estimate_model.AR(2))*err(i-1) + err(i);
+    end
+end
+
+for j = 1:m
+    estimate_model_sim = estimate(model, y_sim(:,j),'X', x,'Display','off');
+    par_sim_NE(j,1) = estimate_model_sim.Intercept;
+    par_sim_NE(j,2) = estimate_model_sim.Beta(1);
+    par_sim_NE(j,3) = estimate_model_sim.Beta(2);
+    par_sim_NE(j,4) = cell2mat(estimate_model_sim.AR(1));
+    par_sim_NE(j,5) = cell2mat(estimate_model_sim.AR(2));
+end
+
+figure
+  subplot(2,3,1)
+    histfit(par_sim_NE(:,1));
+    title('distribuzione intercetta NE');
+  subplot(2,3,2)
+    histfit(par_sim_NE(:,2));
+    title('distribuzione beta diabete NE');
+  subplot(2,3,3)
+    histfit(par_sim_NE(:,3));
+    title('distribuzione beta malattie allergiche NE');
+  subplot(2,3,4)
+    histfit(par_sim_NE(:,4));
+    title('distribuz. coeff. AR(1) NE');
+  subplot(2,3,5)
+    histfit(par_sim_NE(:,5));
+    title('distribuz. coeff. AR(2) NE');
+
+% media beta bootstrap
+par_sim_NE_mean = mean(par_sim_NE);
+% varianza beta bootstrap
+par_sim_NE_var=var(par_sim_NE);
+%IC 95% beta bootstrap NE
+IC_NE=quantile(par_sim_NE,[0.025 0.975]);
+disp('intercetta NE + IC 95% Bootstrap');
+disp([IC_NE(1,1) par_sim_NE_mean(1) IC_NE(2,1)]);
+disp('beta diabete NE + IC 95% Bootstrap');
+disp([IC_NE(1,2) par_sim_NE_mean(2) IC_NE(2,2)]);
+disp('beta malattie allergiche NE + IC 95% Bootstrap');
+disp([IC_NE(1,3) par_sim_NE_mean(3) IC_NE(2,3)]);
+disp('coeff. AR(1) NE + IC 95% Bootstrap');
+disp([IC_NE(1,4) par_sim_NE_mean(4) IC_NE(2,4)]);
+disp('coeff. AR(2) NE + IC 95% Bootstrap');
+disp([IC_NE(1,5) par_sim_NE_mean(5) IC_NE(2,5)]);
+
+
+% forecast regArima
+[yF,eVar] = forecast(estimate_model, 5, 'Y0', y, 'X0', x, 'XF', x_last5);
+err = immse(yF,tNordEst.NE_IPERTENSIONE(end-4:end))
+mse = mean((tNordEst.NE_IPERTENSIONE(end-4:end)-yF).^2);
+ForecastInt(:,1) = yF - 1.96*sqrt(eVar);
+ForecastInt(:,2) = yF + 1.96*sqrt(eVar);
+
+figure
+hold on
+plot(T.ANNO(end-4:end), yF)
+plot(T.ANNO(end-4:end), tNordEst.NE_IPERTENSIONE(end-4:end))
+plot(T.ANNO(end-4:end),ForecastInt,'--k')
+legend('Previsione','Osservazione','IC lb','IC ub')
+title("Confronto Previsione - Osservazione")
+xlabel("Anno [Year]",'FontSize', 16)
+ylabel("Casi di ipertensione [%]", 'FontSize', 16)
+grid()
+hold off
 
 % Analisi dei residui
 % Ricerca degli outliers
