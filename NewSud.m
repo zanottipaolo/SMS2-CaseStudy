@@ -43,7 +43,7 @@ end
 
 
 tSud = T_Stimata(:, 20:25);
-SU_lm1 = fitlm(tSud,'ResponseVar','SU_IPERTENSIONE', 'PredictorVars',{'SU_DIABETE','SU_ECCESSO_PESO','SU_MA_ALLERGICHE'});
+SU_lm1 = fitlm(tSud,'ResponseVar','SU_IPERTENSIONE', 'PredictorVars',{'SU_DIABETE','SU_MA_ALLERGICHE','SU_ECCESSO_PESO'});
 
 %% forecast regressione lineare
 xlm = [tSud.SU_DIABETE(1:end-5,:) tSud.SU_MA_ALLERGICHE(1:end-5,:) tSud.SU_ECCESSO_PESO(1:end-5,:)];
