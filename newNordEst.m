@@ -283,7 +283,7 @@ ylabel("MSE", 'FontSize', 16);
 grid
 hold off
 
-% ARMA(0,0,1) modello con migliore rapporto BIC e MSE e con coeff.
+% ARMA(2,0,0) modello con migliore rapporto BIC e MSE e con coeff.
 % significativi
 model = regARIMA(2,0,0);
 x = [tNordEst.NE_MA_ALLERGICHE(1:end-5,:) tNordEst.NE_DIABETE(1:end-5,:)];

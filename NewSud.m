@@ -41,7 +41,6 @@ for i = 1:width(T_Stimata)
     end
 end
 
-
 tSud = T_Stimata(:, 20:25);
 SU_lm1 = fitlm(tSud,'ResponseVar','SU_IPERTENSIONE', 'PredictorVars',{'SU_DIABETE','SU_MA_ALLERGICHE','SU_ECCESSO_PESO'});
 
@@ -217,9 +216,9 @@ hold off
 
 %% RegArima - Rimosso MA_ALLERGICHE perché non significativo
 %Ciclo per determinare BIC, q e p
-x = [tSud.SU_ECCESSO_PESO(1:end-5,:) tSud.SU_DIABETE(1:end-5,:)];
+x = [tSud.SU_MA_ALLERGICHE(1:end-5,:) tSud.SU_ECCESSO_PESO(1:end-5,:)];
 y = tSud.SU_IPERTENSIONE(1:end-5,:);
-x_last5 = [tSud.SU_ECCESSO_PESO(end-4:end,:) tSud.SU_DIABETE(end-4:end,:)];
+x_last5 = [tSud.SU_MA_ALLERGICHE(end-4:end,:) tSud.SU_ECCESSO_PESO(end-4:end,:)];
 
 q_vector = [0 1 2 3 4];
 p_vector = [0 1 2 3 4];
@@ -228,8 +227,8 @@ Matrix_result2 = NaN(5,5);
 
 format longg
 
-for p = 0:4
-    for q = 0:4
+for p = 0:3
+    for q = 0:3
         model = regARIMA(p,0,q);
         try
             estimate_model = estimate(model, y,'X', x);
@@ -268,8 +267,8 @@ hold off
 
 % ARMA(0,0,1) modello con migliore rapporto BIC e MSE e con coeff.
 % significativi
-model = regARIMA(0,0,1);
-x = [tSud.SU_ECCESSO_PESO(1:end-5,:) tSud.SU_DIABETE(1:end-5,:)];
+model = regARIMA(0,0,2);
+x = [tSud.SU_MA_ALLERGICHE(1:end-5,:) tSud.SU_ECCESSO_PESO(1:end-5,:)];
 y = tSud.SU_IPERTENSIONE(1:end-5,:);
 estimate_model = estimate(model, y,'X', x,'Display','params');
 res = infer(estimate_model, y, 'X', x);
@@ -285,22 +284,26 @@ for j=1:m
     par_sim_SU(j,1)=estimate_model_sim.Intercept;
     par_sim_SU(j,2)=estimate_model_sim.Beta(1);
     par_sim_SU(j,3)=estimate_model_sim.Beta(2);
-    par_sim_SU(j,4)=cell2mat(estimate_model_sim.MA);
+    par_sim_SU(j,4)=cell2mat(estimate_model_sim.MA(1));
+    par_sim_SU(j,4)=cell2mat(estimate_model_sim.MA(2));
 end
 
 figure
-  subplot(2,2,1)
+  subplot(2,3,1)
     histfit(par_sim_SU(:,1));
     title('distribuzione intercetta SU');
-  subplot(2,2,2)
+  subplot(2,3,2)
     histfit(par_sim_SU(:,2));
     title('distribuzione beta sovrappeso SU');
-  subplot(2,2,3)
+  subplot(2,3,3)
     histfit(par_sim_SU(:,3));
     title('distribuzione beta diabete SU');
-  subplot(2,2,4)
+  subplot(2,3,4)
     histfit(par_sim_SU(:,4));
     title('distribuz. coeff. MA(1) SU');
+  subplot(2,3,5)
+    histfit(par_sim_SU(:,4));
+    title('distribuz. coeff. MA(2) SU');
 
 % media beta bootstrap
 par_sim_SU_mean = mean(par_sim_SU);
