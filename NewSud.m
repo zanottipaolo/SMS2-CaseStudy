@@ -214,7 +214,7 @@ hold on
     legend({'Previsione','IC 95% lower bound','IC 95% upper bound','Osservazione'})
 hold off
 
-%% RegArima - Rimosso MA_ALLERGICHE perché non significativo
+%% RegArima - Rimosso diabete perché non significativo
 %Ciclo per determinare BIC, q e p
 x = [tSud.SU_MA_ALLERGICHE(1:end-5,:) tSud.SU_ECCESSO_PESO(1:end-5,:)];
 y = tSud.SU_IPERTENSIONE(1:end-5,:);
@@ -227,8 +227,8 @@ Matrix_result2 = NaN(5,5);
 
 format longg
 
-for p = 0:3
-    for q = 0:3
+for p = 0:4
+    for q = 0:4
         model = regARIMA(p,0,q);
         try
             estimate_model = estimate(model, y,'X', x);
@@ -265,8 +265,8 @@ ylabel("MSE", 'FontSize', 16);
 grid
 hold off
 
-% ARMA(0,0,1) modello con migliore rapporto BIC e MSE e con coeff.
-% significativi
+% regARIMA(0,0,2) modello con migliore rapporto BIC e MSE e con coeff.
+% significativi, stazionario
 model = regARIMA(0,0,2);
 x = [tSud.SU_MA_ALLERGICHE(1:end-5,:) tSud.SU_ECCESSO_PESO(1:end-5,:)];
 y = tSud.SU_IPERTENSIONE(1:end-5,:);
