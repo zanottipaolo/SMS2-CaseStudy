@@ -1,7 +1,7 @@
 function[A, B, C ,D] = map(paramsInit, x, alpha0, beta0, beta1, beta2)
     A = eye(4);
     B = [sqrt(paramsInit(1)) 0 0 0 ; 0 sqrt(paramsInit(2)) 0 0; 0 0 sqrt(paramsInit(3)) 0 ; 0 0 0 sqrt(paramsInit(4))];
-    D = sqrt(exp(paramsInit(3))); % Positive variance constraints
+    D = sqrt(paramsInit(3)); % Positive variance constraints
     n = length(x);
 
     Mean0 = [alpha0; beta0; beta1; beta2];
