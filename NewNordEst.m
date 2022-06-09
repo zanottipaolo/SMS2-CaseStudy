@@ -284,7 +284,7 @@ ylabel("MSE", 'FontSize', 16);
 grid
 hold off
 
-% ARMA(2,0,0) modello con migliore rapporto BIC e MSE e con coeff.
+% regARIMA(2,0,0) modello con migliore rapporto BIC e MSE e con coeff.
 % significativi, stazionario
 model = regARIMA(2,0,0);
 x = [tNordEst.NE_DIABETE(1:end-5,:) tNordEst.NE_ECCESSO_PESO(1:end-5,:)];
