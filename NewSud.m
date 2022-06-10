@@ -285,7 +285,7 @@ for j=1:m
     par_sim_SU(j,2)=estimate_model_sim.Beta(1);
     par_sim_SU(j,3)=estimate_model_sim.Beta(2);
     par_sim_SU(j,4)=cell2mat(estimate_model_sim.MA(1));
-    par_sim_SU(j,4)=cell2mat(estimate_model_sim.MA(2));
+    par_sim_SU(j,5)=cell2mat(estimate_model_sim.MA(2));
 end
 
 figure
@@ -302,7 +302,7 @@ figure
     histfit(par_sim_SU(:,4));
     title('distribuz. coeff. MA(1) SU');
   subplot(2,3,5)
-    histfit(par_sim_SU(:,4));
+    histfit(par_sim_SU(:,5));
     title('distribuz. coeff. MA(2) SU');
 
 % media beta bootstrap
@@ -313,12 +313,14 @@ par_sim_SU_var=var(par_sim_SU);
 IC_SU=quantile(par_sim_SU,[0.025 0.975]);
 disp('intercetta SU + IC 95% Bootstrap');
 disp([IC_SU(1,1) par_sim_SU_mean(1) IC_SU(2,1)]);
-disp('beta sovrappeso SU + IC 95% Bootstrap');
+disp('beta ma allergiche SU + IC 95% Bootstrap');
 disp([IC_SU(1,2) par_sim_SU_mean(2) IC_SU(2,2)]);
 disp('beta diabete SU + IC 95% Bootstrap');
 disp([IC_SU(1,3) par_sim_SU_mean(3) IC_SU(2,3)]);
 disp('coeff. MA(1) SU + IC 95% Bootstrap');
 disp([IC_SU(1,4) par_sim_SU_mean(4) IC_SU(2,4)]);
+disp('coeff. MA(2) SU + IC 95% Bootstrap');
+disp([IC_SU(1,4) par_sim_SU_mean(4) IC_SU(2,5)]);
 
 % forecast regArima
 [yF,eVar] = forecast(estimate_model, 5, 'Y0', y, 'X0', x, 'XF', x_last5);
@@ -396,6 +398,14 @@ SU_res_corr_w_reg = SU_mat_corr_residui(2:end, 1) % Vettore di rho residui - reg
 
 % T-test media = 0
 [h, pval] = ttest(res)
+
+% test di Lujing Box, residui iid
+[h,pValue] = lbqtest(res)
+if h == 0
+    disp("accetto l'ipotesi nulla, innovazioni iid")
+else
+    disp("rifiuto l'ipotesi nulla, innovazioni non iid")
+end
 
 % Jb Test
 x2 = res;
