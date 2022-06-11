@@ -270,7 +270,7 @@ hold off
 model = regARIMA(2,0,0);
 estimate_model = estimate(model, y,'X', x,'Display','params');
 res = infer(estimate_model, y, 'X', x);
-estimate_y = res + y;
+estimate_y = y -res;
 
 % calcolo soluzioni dell'equazione caratteristica
 r=roots([1, -cell2mat(estimate_model.AR(1)), -cell2mat(estimate_model.AR(2))]);
