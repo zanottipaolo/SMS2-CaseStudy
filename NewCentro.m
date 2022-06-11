@@ -268,7 +268,7 @@ hold off
 model = regARIMA(1,0,0);
 estimate_model = estimate(model, y,'X', x,'Display','params');
 res = infer(estimate_model, y, 'X', x);
-estimate_y = res + y;
+estimate_y = y - res;
 
 % test di Dickey-Fuller
 ytest = y - (estimate_model.Intercept + estimate_model.Beta(1).*x(:,1) + estimate_model.Beta(2).*x(:,2));
