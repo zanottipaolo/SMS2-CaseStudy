@@ -276,6 +276,15 @@ estimate_model = estimate(model, y,'X', x,'Display','params');
 res = infer(estimate_model, y, 'X', x);
 estimate_y = res + y;
 
+% test di Dickey-Fuller
+ytest = y - (estimate_model.Intercept + estimate_model.Beta(1).*x(:,1) + estimate_model.Beta(2).*x(:,2));
+[h,p]=adftest(ytest);
+if h == 1
+    disp("processo stazionario")
+else
+    disp("processo non stazionario")
+end
+
 % Bootstrap parametrico IC coefficienti regArima (errori normali)
 n=length(y);
 m=100;
