@@ -3,7 +3,7 @@
 % Medolago Emanuele     1058907    
 % Zanotti Paolo         1074166
 
-rng(6)
+rng(5)
 addpath("Mskekur/")
 addpath("tHet.m/")
 
@@ -120,7 +120,7 @@ title('Histfit Residuals')
 subplot(2,2,3)
 autocorr(res)
 subplot(2,2,4)
-parcorr(res)
+parcorr(res,'Method','yule-walker')
 
 figure
 plot(T.ANNO,y3_flt)
@@ -144,7 +144,7 @@ title('Histfit Residuals')
 subplot(2,2,3)
 autocorr(res)
 subplot(2,2,4)
-parcorr(res)
+parcorr(res,'Method','yule-walker')
 
 figure
 plot(T.ANNO,y3_smo)
@@ -176,7 +176,7 @@ title('Histfit Residuals')
 subplot(2,2,3)
 autocorr(res)
 subplot(2,2,4)
-parcorr(res)
+parcorr(res,'Method','yule-walker')
 
 figure
 plot(T.ANNO,y3_frc)
@@ -212,11 +212,11 @@ ylabel("Casi di ipertensione [%]", 'FontSize', 16)
 grid()
 hold off
 
-%% RegArima - Tolto il regressore Eccesso peso perché non significativo
+%% RegArima - Tolto il regressore malattie allergiche perché non significativo
 %Ciclo per determinare BIC, q e p
-x = [tCentro.CE_DIABETE(1:end-5,:) tCentro.CE_MA_ALLERGICHE(1:end-5,:)];
+x = [tCentro.CE_ECCESSO_PESO(1:end-5,:) tCentro.CE_DIABETE(1:end-5,:)];
 y = tCentro.CE_IPERTENSIONE(1:end-5,:);
-x_last5 = [tCentro.CE_DIABETE(end-4:end,:) tCentro.CE_MA_ALLERGICHE(end-4:end,:)];
+x_last5 = [tCentro.CE_ECCESSO_PESO(end-4:end,:) tCentro.CE_DIABETE(end-4:end,:)];
 
 q_vector = [0 1 2 3 4];
 p_vector = [0 1 2 3 4];
@@ -238,7 +238,7 @@ for p = 0:4
             mse = mean((tCentro.CE_IPERTENSIONE(end-4:end)-yF).^2);
             Matrix_result2(p+1, q+1) = mse;
         catch
-            % Processo non stazionario
+            % Processo non stazionario/non invertibile
             Matrix_result(p+1, q+1) = NaN;
             Matrix_result2(p+1, q+1) = NaN;
         end  
@@ -274,25 +274,9 @@ estimate_y = res + y;
 n=length(y);
 m=100;
 [Y,E_sim,U_sim] = simulate(estimate_model,n,'NumPaths',m,'X',x);
-y_sim=nan(n,m);
-u = nan(n,m);
-for k = 1:m
-    E = E_sim(:,k);
-    U = U_sim(1,k);
-    for j = 2:20
-        u(1,k) = U;
-        u(j,k) = cell2mat(estimate_model.AR)*u(j-1,k) + E(j);
-    end
-end
-
-for k=1:m
-    for i=1:20
-        y_sim(i,k) = estimate_model.Intercept + estimate_model.Beta(1)*x(i,1) + estimate_model.Beta(2)*x(i,2) + u(i,k);
-    end
-end 
 
 for j=1:m
-    estimate_model_sim = estimate(model, y_sim(:,j),'X', x,'Display','off');
+    estimate_model_sim = estimate(model, Y(:,j),'X', x,'Display','off');
     par_sim_CE(j,1)=estimate_model_sim.Intercept;
     par_sim_CE(j,2)=estimate_model_sim.Beta(1);
     par_sim_CE(j,3)=estimate_model_sim.Beta(2);
