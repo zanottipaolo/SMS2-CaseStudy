@@ -2,6 +2,10 @@
 % De Duro Federico      1073477
 % Medolago Emanuele     1058907    
 % Zanotti Paolo         1074166
+
+% Dependencies
+% 1. Image Processing Toolbox (for 'immse')
+
 rng(6)
 addpath("Mskekur\")
 addpath("tHet.m\")

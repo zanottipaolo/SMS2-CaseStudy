@@ -9,6 +9,7 @@ Check out our work! :point_down: <br>
 2. [TestHet (heteroskedasticity)](https://github.com/zanottipaolo/SMS2-CaseStudy/blob/main/TestHet.m)
 3. [Statistics and Machine Learning Toolbox]
 4. [Econometrics Toolbox]
+5. [Image Processing Toolbox]
 
 ## Part 1
 - [x] Mardia test
@@ -24,6 +25,8 @@ Check out our work! :point_down: <br>
 - [x] Bootstrap
 - [x] Regressione Dinamica
 - [x] RegArima
+- [x] Dickey–Fuller test
+- [x] Ljung–Box test
 
 Made by:
 - [Federico De Duro](https://github.com/Jfkmdd)
