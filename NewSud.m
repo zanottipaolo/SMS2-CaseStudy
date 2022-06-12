@@ -378,7 +378,7 @@ subplot(2,2,1)
     qqplot(res)
     title('Distribuzione Quantili teorici - Quantili residui standardizzati');
 subplot(2,2,2)
-    [S,AX,BigAx,H,HAx] = plotmatrix([tSud.SU_DIABETE(1:end-5,:) tSud.SU_ECCESSO_PESO(1:end-5,:)], res)
+    [S,AX,BigAx,H,HAx] = plotmatrix([tSud.SU_DIABETE(1:end-5,:) tSud.SU_MA_ALLERGICHE(1:end-5,:)], res)
     title 'Correlazione Residui-Regressori';
     AX(1,1).YLabel.String = 'Residui';
     AX(1,1).XLabel.String = 'DIABETE';
