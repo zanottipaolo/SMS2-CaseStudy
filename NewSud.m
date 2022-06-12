@@ -51,7 +51,7 @@ x_last5 = [tSud.SU_DIABETE(end-4:end,:) tSud.SU_MA_ALLERGICHE(end-4:end,:) tSud.
 
 lm_SU = fitlm(xlm,ylm);
 [ypred, yci] = predict(lm_SU, x_last5, 'alpha', 0.05, 'Prediction', 'observation', 'Simultaneous','on');
-err = immse(ypred, tSud.SU_IPERTENSIONE(end-4:end));
+% err = immse(ypred, tSud.SU_IPERTENSIONE(end-4:end));
 mse = mean((tSud.SU_IPERTENSIONE(end-4:end)-ypred).^2)
 
 figure
@@ -201,7 +201,7 @@ modelSU = ssm(funzioneMap)
 x_reg = [ones(length(tSud.SU_DIABETE(1:end-5,:)),1) tSud.SU_DIABETE(1:end-5,:) tSud.SU_MA_ALLERGICHE(1:end-5,:) tSud.SU_ECCESSO_PESO(1:end-5,:)];
 x_last5_reg = [ones(length(tSud.SU_DIABETE(end-4:end,:)),1) tSud.SU_DIABETE(end-4:end,:) tSud.SU_MA_ALLERGICHE(end-4:end,:) tSud.SU_ECCESSO_PESO(end-4:end,:)];
 [yFregDin, yVar] = forecast(estModel, 5, y1, 'Predictors0', x_reg, 'PredictorsF', x_last5_reg, 'Beta', estParams)
-err = immse(yFregDin,tSud.SU_IPERTENSIONE(end-4:end))
+% err = immse(yFregDin,tSud.SU_IPERTENSIONE(end-4:end))
 mse = mean((tSud.SU_IPERTENSIONE(end-4:end)-yFregDin).^2)
 ForecastIntervals(:,1) = yFregDin - 1.96*sqrt(yVar);
 ForecastIntervals(:,2) = yFregDin + 1.96*sqrt(yVar);
@@ -335,7 +335,7 @@ disp([IC_SU(1,5) par_sim_SU_mean(5) IC_SU(2,5)]);
 
 % forecast regArima
 [yF,eVar] = forecast(estimate_model, 5, 'Y0', y, 'X0', x, 'XF', x_last5);
-err = immse(yF,tSud.SU_IPERTENSIONE(end-4:end))
+% err = immse(yF,tSud.SU_IPERTENSIONE(end-4:end))
 mse = mean((tSud.SU_IPERTENSIONE(end-4:end)-yF).^2);
 ForecastInt(:,1) = yF - 1.96*sqrt(eVar);
 ForecastInt(:,2) = yF + 1.96*sqrt(eVar);
