@@ -71,7 +71,7 @@ y = tNordOvest.NO_IPERTENSIONE(1:end-5,:);
 x_last5 = [tNordOvest.NO_DIABETE(end-4:end,:) tNordOvest.NO_MA_ALLERGICHE(end-4:end,:) tNordOvest.NO_ECCESSO_PESO(end-4:end,:)];
 lmNO = fitlm(x,y);
 [ypred,yci] = predict(lmNO,x_last5,'alpha',0.05,'Prediction','observation','Simultaneous','on');
-err = immse(ypred,tNordOvest.NO_IPERTENSIONE(end-4:end))
+% err = immse(ypred,tNordOvest.NO_IPERTENSIONE(end-4:end))
 mse = mean((tNordOvest.NO_IPERTENSIONE(end-4:end)-ypred).^2);
 
 figure
@@ -201,7 +201,7 @@ modelNO = ssm(funzioneMap)
 x_reg = [ones(length(tNordOvest.NO_DIABETE(1:end-5,:)),1) tNordOvest.NO_DIABETE(1:end-5,:) tNordOvest.NO_MA_ALLERGICHE(1:end-5,:) tNordOvest.NO_ECCESSO_PESO(1:end-5,:)];
 x_last5_reg = [ones(length(tNordOvest.NO_DIABETE(end-4:end,:)),1) tNordOvest.NO_DIABETE(end-4:end,:) tNordOvest.NO_MA_ALLERGICHE(end-4:end,:) tNordOvest.NO_ECCESSO_PESO(end-4:end,:)];
 [yFregDin, yVar] = forecast(estModel,5,y1,'Predictors0',x_reg,'PredictorsF',x_last5_reg,'Beta',estParams)
-err = immse(yFregDin,tNordOvest.NO_IPERTENSIONE(end-4:end))
+% err = immse(yFregDin,tNordOvest.NO_IPERTENSIONE(end-4:end))
 mse = mean((tNordOvest.NO_IPERTENSIONE(end-4:end)-yFregDin).^2)
 ForecastIntervals(:,1) = yFregDin - 1.96*sqrt(yVar);
 ForecastIntervals(:,2) = yFregDin + 1.96*sqrt(yVar);
@@ -244,7 +244,7 @@ for p = 0:4
             mse = mean((tNordOvest.NO_IPERTENSIONE(end-4:end)-yF).^2);
             Matrix_result2(p+1, q+1) = mse;
         catch
-            % Processo non stazionario
+            % Processo non stazionario/non invertibile
             Matrix_result(p+1, q+1) = NaN;
             Matrix_result2(p+1, q+1) = NaN;
         end  
@@ -344,7 +344,7 @@ disp([IC_NO(1,4) par_sim_NO_mean(4) IC_NO(2,4)]);
 
 % forecast regArima
 [yF,eVar] = forecast(estimate_model, 5, 'Y0', y, 'X0', x, 'XF', x_last5);
-err = immse(yF,tNordOvest.NO_IPERTENSIONE(end-4:end))
+% err = immse(yF,tNordOvest.NO_IPERTENSIONE(end-4:end))
 mse = mean((tNordOvest.NO_IPERTENSIONE(end-4:end)-yF).^2);
 ForecastInt(:,1) = yF - 1.96*sqrt(eVar);
 ForecastInt(:,2) = yF + 1.96*sqrt(eVar);
