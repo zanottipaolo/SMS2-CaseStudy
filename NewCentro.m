@@ -65,7 +65,7 @@ y = tCentro.CE_IPERTENSIONE(1:end-5,:);
 x_last5 = [tCentro.CE_DIABETE(end-4:end,:) tCentro.CE_MA_ALLERGICHE(end-4:end,:) tCentro.CE_ECCESSO_PESO(end-4:end,:)];
 lmCE = fitlm(x,y);
 [ypred,yci] = predict(lmCE,x_last5,'alpha',0.05,'Prediction','observation','Simultaneous','on');
-err = immse(ypred,tCentro.CE_IPERTENSIONE(end-4:end))
+% err = immse(ypred,tCentro.CE_IPERTENSIONE(end-4:end))
 mse = mean((tCentro.CE_IPERTENSIONE(end-4:end)-ypred).^2);
 
 figure
@@ -195,7 +195,7 @@ modelCE = ssm(funzioneMap)
 x_reg = [ones(length(tCentro.CE_DIABETE(1:end-5,:)),1) tCentro.CE_DIABETE(1:end-5,:) tCentro.CE_MA_ALLERGICHE(1:end-5,:) tCentro.CE_ECCESSO_PESO(1:end-5,:)];
 x_last5_reg = [ones(length(tCentro.CE_DIABETE(end-4:end,:)),1) tCentro.CE_DIABETE(end-4:end,:) tCentro.CE_MA_ALLERGICHE(end-4:end,:) tCentro.CE_ECCESSO_PESO(end-4:end,:)];
 [yFregDin, yVar] = forecast(estModel,5,y1,'Predictors0',x_reg,'PredictorsF',x_last5_reg,'Beta',estParams)
-err = immse(yFregDin,tCentro.CE_IPERTENSIONE(end-4:end))
+% err = immse(yFregDin,tCentro.CE_IPERTENSIONE(end-4:end))
 mse = mean((tCentro.CE_IPERTENSIONE(end-4:end)-yFregDin).^2)
 ForecastIntervals(:,1) = yFregDin - 1.96*sqrt(yVar);
 ForecastIntervals(:,2) = yFregDin + 1.96*sqrt(yVar);
@@ -322,8 +322,8 @@ disp([IC_CE(1,4) par_sim_CE_mean(4) IC_CE(2,4)]);
 
 % forecast regArima
 [yF,eVar] = forecast(estimate_model, 5, 'Y0', y, 'X0', x, 'XF', x_last5);
-err = immse(yF,tCentro.CE_IPERTENSIONE(end-4:end))
-mse = mean((tCentro.CE_IPERTENSIONE(end-4:end)-yF).^2);
+% err = immse(yF,tCentro.CE_IPERTENSIONE(end-4:end))
+mse = mean((tCentro.CE_IPERTENSIONE(end-4:end)-yF).^2)
 ForecastInt(:,1) = yF - 1.96*sqrt(eVar);
 ForecastInt(:,2) = yF + 1.96*sqrt(eVar);
 
