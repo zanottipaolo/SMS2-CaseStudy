@@ -423,7 +423,7 @@ subplot(2,2,4)
     title('Residui studentizzati vs Fitted data');
 
 % Omoschedasticità
-pval = TestHet(res,[tNordEst.NE_DIABETE(1:end-5,:), tNordEst.NE_MA_ALLERGICHE(1:end-5,:)], '-BPK')
+pval = TestHet(res,[tNordEst.NE_DIABETE(1:end-5,:) tNordEst.NE_ECCESSO_PESO(1:end-5,:)], '-BPK')
 if pval>0.05
     disp("accetto l'ipotesi nulla, gli errori sono omoschedastici")
 else
@@ -431,7 +431,7 @@ else
 end
 
 % Verifica dell'incorrelazione tramite gli indici di correlazione
-NE_mat_corr_residui = corrcoef([res, tNordEst.NE_DIABETE(1:end-5,:), tNordEst.NE_MA_ALLERGICHE(1:end-5,:)], 'Rows','complete');
+NE_mat_corr_residui = corrcoef([res, tNordEst.NE_DIABETE(1:end-5,:) tNordEst.NE_ECCESSO_PESO(1:end-5,:)], 'Rows','complete');
 NE_res_corr_w_reg = NE_mat_corr_residui(2:end, 1) % Vettore di rho residui - regressori
 
 %t test media=0
