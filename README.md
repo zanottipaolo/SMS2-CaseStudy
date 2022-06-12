@@ -20,7 +20,7 @@ Check out our work! :point_down: <br>
 - [x] Durbin–Watson statistic
 
 ## Part 2
-- [ ] Monte Carlo method
+- [x] Monte Carlo method
 - [x] Bootstrap
 - [x] Regressione Dinamica
 - [x] RegArima
