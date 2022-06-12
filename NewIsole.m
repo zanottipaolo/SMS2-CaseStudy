@@ -72,7 +72,7 @@ y1 = tIsole.IS_IPERTENSIONE(1:end-5,:);
 x_last5 = [tIsole.IS_DIABETE(end-4:end,:) tIsole.IS_MA_ALLERGICHE(end-4:end,:)];
 lmIS = fitlm(x1,y1);
 [ypred,yci] = predict(lmIS,x_last5,'alpha',0.05,'Prediction','observation','Simultaneous','on');
-err = immse(ypred,tIsole.IS_IPERTENSIONE(end-4:end))
+% err = immse(ypred,tIsole.IS_IPERTENSIONE(end-4:end))
 mse = mean((tIsole.IS_IPERTENSIONE(end-4:end)-ypred).^2);
 
 figure
@@ -202,7 +202,7 @@ modelIS = ssm(funzioneMap)
 x_reg = [ones(length(tIsole.IS_DIABETE(1:end-5,:)),1) tIsole.IS_DIABETE(1:end-5,:) tIsole.IS_MA_ALLERGICHE(1:end-5,:) tIsole.IS_ECCESSO_PESO(1:end-5,:)];
 x_last5_reg = [ones(length(tIsole.IS_DIABETE(end-4:end,:)),1) tIsole.IS_DIABETE(end-4:end,:) tIsole.IS_MA_ALLERGICHE(end-4:end,:) tIsole.IS_ECCESSO_PESO(end-4:end,:)];
 [yFregDin, yVar] = forecast(estModel,5,y2,'Predictors0',x_reg,'PredictorsF',x_last5_reg,'Beta',estParams)
-err = immse(yFregDin,tIsole.IS_IPERTENSIONE(end-4:end))
+% err = immse(yFregDin,tIsole.IS_IPERTENSIONE(end-4:end))
 mse = mean((tIsole.IS_IPERTENSIONE(end-4:end)-yFregDin).^2)
 ForecastIntervals(:,1) = yFregDin - 1.96*sqrt(yVar);
 ForecastIntervals(:,2) = yFregDin + 1.96*sqrt(yVar);
@@ -369,7 +369,7 @@ disp([IC_IS(1,3) par_sim_IS_mean(3) IC_IS(2,3)]);
 
 % forecast regArima
 [yF,eVar] = forecast(estimate_model, 5, 'Y0', y, 'X0', x, 'XF', x_last5);
-err = immse(yF,tIsole.IS_IPERTENSIONE(end-4:end))
+% err = immse(yF,tIsole.IS_IPERTENSIONE(end-4:end))
 mse = mean((tIsole.IS_IPERTENSIONE(end-4:end)-yF).^2);
 ForecastInt(:,1) = yF - 1.96*sqrt(eVar);
 ForecastInt(:,2) = yF + 1.96*sqrt(eVar);
