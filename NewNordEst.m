@@ -76,6 +76,7 @@ mse = mean((tNordEst.NE_IPERTENSIONE(end-4:end)-ypred).^2)
 
 figure
     plot([2010 2011 2012 2013 2014], ypred)
+    title('Previsione dal 2010 al 2014 tramite regressione lineare')
 hold on
     grid
     plot([2010 2011 2012 2013 2014], yci,'k--')
@@ -226,11 +227,15 @@ ForecastIntervals(:,1) = yFregDin - 1.96*sqrt(yVar);
 ForecastIntervals(:,2) = yFregDin + 1.96*sqrt(yVar);
 
 figure
-    plot(yFregDin)
+    plot([2010 2011 2012 2013 2014], yFregDin)
+    title('Previsione dal 2010 al 2014 tramite regressione dinamica')
 hold on
-    plot(ForecastIntervals,'k--')
-    plot(tNordEst.NE_IPERTENSIONE(end-4:end),'r')
+grid
+    plot([2010 2011 2012 2013 2014], ForecastIntervals,'k--')
+    plot([2010 2011 2012 2013 2014], tNordEst.NE_IPERTENSIONE(end-4:end),'r')
     legend({'Previsione','IC 95% lower bound','IC 95% upper bound','Osservazione'})
+    ylabel('Casi di ipertensione [%]');
+    xlabel('Anno [2010 - 2014]')
 hold off
 
 %% RegArima - Tolto il regressore malattie allergiche perché non significativo
@@ -268,7 +273,7 @@ end
 
 figure
 subplot(2,1,1)
-plot(p_vector, Matrix_result)
+plot(p_vector, Matrix_result, 'LineWidth',3)
 legend({'q = 0','q = 1','q = 2','q = 3','q = 4'})
 title('Andamento BIC rispetto a (p,q)', 'FontSize', 16)
 xlabel("p", 'FontSize', 16);
@@ -276,7 +281,7 @@ ylabel("BIC", 'FontSize', 16);
 grid
 hold on
 subplot(2,1,2)
-plot(p_vector, Matrix_result2)
+plot(p_vector, Matrix_result2, 'LineWidth',3)
 legend({'q = 0','q = 1','q = 2','q = 3','q = 4'})
 title('Andamento MSE rispetto a (p,q)', 'FontSize', 16)
 xlabel("p", 'FontSize', 16);
@@ -368,7 +373,7 @@ plot(T.ANNO(end-4:end), yF)
 plot(T.ANNO(end-4:end), tNordEst.NE_IPERTENSIONE(end-4:end))
 plot(T.ANNO(end-4:end),ForecastInt,'--k')
 legend('Previsione','Osservazione','IC lb','IC ub')
-title("Confronto Previsione - Osservazione")
+title("Previsione dal 2010 al 2014 tramite regArima")
 xlabel("Anno [Year]",'FontSize', 16)
 ylabel("Casi di ipertensione [%]", 'FontSize', 16)
 grid()
