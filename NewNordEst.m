@@ -71,7 +71,7 @@ x_last5 = [tNordEst.NE_DIABETE(end-4:end,:) tNordEst.NE_MA_ALLERGICHE(end-4:end,
 
 lm_NE = fitlm(xlm,ylm);
 [ypred, yci] = predict(lm_NE, x_last5, 'alpha', 0.05, 'Prediction', 'observation', 'Simultaneous','on');
-err = immse(ypred, tNordEst.NE_IPERTENSIONE(end-4:end));
+% err = immse(ypred, tNordEst.NE_IPERTENSIONE(end-4:end));
 mse = mean((tNordEst.NE_IPERTENSIONE(end-4:end)-ypred).^2)
 
 figure
@@ -221,7 +221,7 @@ modelNE = ssm(funzioneMap)
 x_reg = [ones(length(tNordEst.NE_DIABETE(1:end-5,:)),1) tNordEst.NE_DIABETE(1:end-5,:) tNordEst.NE_MA_ALLERGICHE(1:end-5,:) tNordEst.NE_ECCESSO_PESO(1:end-5,:)];
 x_last5_reg = [ones(length(tNordEst.NE_DIABETE(end-4:end,:)),1) tNordEst.NE_DIABETE(end-4:end,:) tNordEst.NE_MA_ALLERGICHE(end-4:end,:) tNordEst.NE_ECCESSO_PESO(end-4:end,:)];
 [yFregDin, yVar] = forecast(estModel, 5, y1, 'Predictors0', x_reg, 'PredictorsF', x_last5_reg, 'Beta', estParams)
-err = immse(yFregDin,tNordEst.NE_IPERTENSIONE(end-4:end))
+% err = immse(yFregDin,tNordEst.NE_IPERTENSIONE(end-4:end))
 mse = mean((tNordEst.NE_IPERTENSIONE(end-4:end)-yFregDin).^2)
 ForecastIntervals(:,1) = yFregDin - 1.96*sqrt(yVar);
 ForecastIntervals(:,2) = yFregDin + 1.96*sqrt(yVar);
@@ -362,7 +362,7 @@ disp([IC_NE(1,5) par_sim_NE_mean(5) IC_NE(2,5)]);
 
 % forecast regArima
 [yF,eVar] = forecast(estimate_model, 5, 'Y0', y, 'X0', x, 'XF', x_last5);
-err = immse(yF,tNordEst.NE_IPERTENSIONE(end-4:end))
+% err = immse(yF,tNordEst.NE_IPERTENSIONE(end-4:end))
 mse = mean((tNordEst.NE_IPERTENSIONE(end-4:end)-yF).^2);
 ForecastInt(:,1) = yF - 1.96*sqrt(eVar);
 ForecastInt(:,2) = yF + 1.96*sqrt(eVar);
