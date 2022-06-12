@@ -365,7 +365,7 @@ subplot(2,2,1)
     qqplot(res)
     title('Distribuzione Quantili teorici - Quantili residui standardizzati Centro');
 subplot(2,2,2)
-    [S,AX,BigAx,H,HAx] = plotmatrix([tCentro.CE_DIABETE(1:end-5,:) tCentro.CE_MA_ALLERGICHE(1:end-5,:)], res)
+    [S,AX,BigAx,H,HAx] = plotmatrix([tCentro.CE_ECCESSO_PESO(1:end-5,:) tCentro.CE_DIABETE(1:end-5,:)], res)
     title 'Correlazione Residui-Regressori';
     AX(1,1).YLabel.String = 'Residui';
     AX(1,1).XLabel.String = 'DIABETE';
@@ -383,7 +383,7 @@ subplot(2,2,4)
     title('Residui studentizzati vs Fitted data Centro');
 
 % Omoschedasticità
-pval = TestHet(res,[tCentro.CE_DIABETE(1:end-5,:), tCentro.CE_MA_ALLERGICHE(1:end-5,:)], '-BPK')
+pval = TestHet(res,[tCentro.CE_ECCESSO_PESO(1:end-5,:) tCentro.CE_DIABETE(1:end-5,:)], '-BPK')
 if pval>0.05
     disp("accetto l'ipotesi nulla, gli errori sono omoschedastici")
 else
@@ -391,7 +391,7 @@ else
 end
 
 % Verifica dell'incorrelazione tramite gli indici di correlazione
-CE_mat_corr_residui = corrcoef([res, tCentro.CE_DIABETE(1:end-5,:), tCentro.CE_MA_ALLERGICHE(1:end-5,:)], 'Rows','complete');
+CE_mat_corr_residui = corrcoef([res, tCentro.CE_ECCESSO_PESO(1:end-5,:) tCentro.CE_DIABETE(1:end-5,:)], 'Rows','complete');
 CE_res_corr_w_reg = CE_mat_corr_residui(2:end, 1) % Vettore di rho residui - regressori
 
 % T-test media = 0
