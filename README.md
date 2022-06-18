@@ -2,7 +2,7 @@
 Case Study about hypertension in Italy from 1990 to 2014.
 
 Check out our work! :point_down: <br>
-[Dataset](https://github.com/zanottipaolo/SMS2-CaseStudy/blob/main/dataset.mat), [Full Report](https://github.com/zanottipaolo/SMS2-CaseStudy) and [MATLAB Script](https://github.com/zanottipaolo/SMS2-CaseStudy/blob/main/script.m).
+[Dataset](https://github.com/zanottipaolo/SMS2-CaseStudy/blob/main/dataset.mat), [Full Report](https://github.com/zanottipaolo/SMS2-CaseStudy/blob/main/Report.pdf) and [MATLAB Script](https://github.com/zanottipaolo/SMS2-CaseStudy/blob/main/script.m).
 
 ## Dependencies on Matlab
 1. [Mskekur (Mardia test)](https://github.com/zanottipaolo/SMS2-CaseStudy/blob/main/Mskekur.m)
